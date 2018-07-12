@@ -7,7 +7,7 @@ socket.connect();
 
 const config = {
   type: Phaser.AUTO,
-  parent: 'phaser-example',
+  parent: 'fear-game',
   width: 800,
   height: 600,
   scene: [
