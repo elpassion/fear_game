@@ -5,10 +5,6 @@
 # is restricted to this project.
 use Mix.Config
 
-# General application configuration
-config :fear,
-  ecto_repos: [Fear.Repo]
-
 # Configures the endpoint
 config :fear, FearWeb.Endpoint,
   url: [host: "localhost"],

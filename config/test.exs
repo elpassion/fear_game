@@ -8,12 +8,3 @@ config :fear, FearWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-# Configure your database
-config :fear, Fear.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "fear_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
