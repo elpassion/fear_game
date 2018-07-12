@@ -30,11 +30,10 @@ export default class extends Phaser.Scene {
       data.move_time && this.animateMove(data);
     });
 
-
-    // TODO new other player
-    // gameChannel.on('connected', () => {
-    //   this.players = new Player
-    // });
+    gameChannel.on('user_joined', (data) => {
+      console.log('user joined');
+      this.addPlayer(data);
+    });
 
     makeAnimations(this);
 
@@ -44,6 +43,9 @@ export default class extends Phaser.Scene {
   update () {
     this.updateBackground();
     this.player && this.player.update();
+    // Object.keys(this.players).map( key => {
+    //   this.players[key].update();
+    // });
     this.anims.play(this.animation, true);
   }
 
@@ -98,14 +100,23 @@ export default class extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
   }
 
+  addPlayer(data) {
+    this.players[data.name] = new Player({
+      scene: this,
+      x: data.x * 16,
+      y: data.y * 16,
+      key: 'player',
+    });
+  }
+
   updateBackground() {
     this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
   }
 
 
   animateMove(data) {
-    const movingPlayer = this.player;
-    // const movingPlayer = this.players[data.name];
+    console.log('move', data);
+    const movingPlayer = this.players[data.name];
     let direction = '';
 
     if(movingPlayer.y / 16 === data.y) {
@@ -122,24 +133,26 @@ export default class extends Phaser.Scene {
       }
     }
 
+    let movement = {};
+
+    if(direction === 'n') movement = { start: 'up', complete: 'upStanding' };
+    if(direction === 's') movement = { start: 'down', complete: 'downStanding' };
+    if(direction === 'e') movement = { start: 'right', complete: 'rightStanding' };
+    if(direction === 'w') movement = { start: 'left', complete: 'leftStanding' };
+
     const tween = this.tweens.add({
-      targets: this.player,
+      targets: this.players[data.name],
       x: data.x * 16,
       y: data.y * 16,
       duration: data.move_time,
       ease: 'Linear',
       onStart: () => {
-        if(direction === 'n') this.player.animation = 'up';
-        if(direction === 's') this.player.animation = 'down';
-        if(direction === 'e') this.player.animation = 'right';
-        if(direction === 'w') this.player.animation = 'left';
-        // if(direction === 'n') this.players[data.name].animation = 'up';
-        // if(direction === 's') this.players[data.name].animation = 'down';
-        // if(direction === 'e') this.players[data.name].animation = 'right';
-        // if(direction === 'w') this.players[data.name].animation = 'left';
+        this.players[data.name].animation = movement.start;
+        this.players[data.name].update();
       },
       onComplete: () => {
-        this.player.animation = 'stand';
+        this.players[data.name].animation = movement.complete;
+        this.players[data.name].update();
       }
     });
   }
