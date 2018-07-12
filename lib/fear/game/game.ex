@@ -35,8 +35,13 @@ defmodule Fear.Game do
     if diff >= move_time * 0.85 do # allow slightly faster movement for smooth movement on frontend
       case Board.move(:user, username, direction) do
         {:ok, position} ->
-          update_user_position(user, position)
-          {:ok, position, move_time}
+          user = update_user_position(user, position)
+          if Board.get_field(position) == [] do
+            user = kill_user(user)
+            {:lose, user, move_time}
+          else
+            {:ok, position, move_time}
+          end
         {:error, position} -> {:error, position}
       end
     else
@@ -54,6 +59,10 @@ defmodule Fear.Game do
 
   defp update_user_position(user, {x, y}) do
     Users.update(user.name, x: x, y: y, last_move: NaiveDateTime.utc_now())
+  end
+
+  defp kill_user(user) do
+    Users.update(user.name, alive?: false)
   end
 
 end

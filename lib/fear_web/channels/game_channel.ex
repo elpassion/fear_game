@@ -20,6 +20,8 @@ defmodule FearWeb.GameChannel do
   def handle_in("move", %{"dir" => direction}, socket) do
     direction = String.to_existing_atom(direction)
     case Game.move(socket.assigns[:username], direction) do
+      {:lose, user, move_time} ->
+        
       {:ok, {x, y}, move_time} ->
         broadcast socket, "move", %{x: x, y: y, name: socket.assigns[:username], move_time: move_time}
         {:noreply, socket}

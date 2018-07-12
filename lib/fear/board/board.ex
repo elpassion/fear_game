@@ -78,11 +78,12 @@ defmodule Fear.Board do
     position = Container.get_position(container, type, object)
     new_position = Moves.add(position, Directions.calc(direction))
 
-    if Container.blocks?(container, new_position) do
-      {:reply, {:error, position}, container}
-    else
-      container = Container.move(container, new_position, type, object)
-      {:reply, {:ok, new_position}, container}
+    cond do
+      Container.blocks?(container, new_position) ->
+        {:reply, {:error, position}, container}
+      true ->
+        container = Container.move(container, new_position, type, object)
+        {:reply, {:ok, new_position}, container}
     end
   end
 
