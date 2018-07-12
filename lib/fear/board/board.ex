@@ -12,7 +12,7 @@ defmodule Fear.Board do
 
   # CLIENT
 
-  def start_link(_) do
+  def start_link() do
     GenServer.start_link(__MODULE__, Container.new, name: __MODULE__)
   end
 

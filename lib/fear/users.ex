@@ -2,7 +2,7 @@ defmodule Fear.Users do
   use GenServer
   alias Fear.User
 
-  def start_link(_) do
+  def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
