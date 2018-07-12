@@ -1,5 +1,22 @@
 defmodule FearWeb.GameChannel do
   use FearWeb, :channel
+  alias Fear.Presence
+
+  @map %{
+    data: [
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  1,  2,  3,  0,  0,  0,  1,  2,  3,  0 ],
+      [  0,  5,  6,  7,  0,  0,  0,  5,  6,  7,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0, 14, 13, 14,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0, 14, 14, 14, 14, 14,  0,  0,  0, 15 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0, 15, 15 ],
+      [ 35, 36, 37,  0,  0,  0,  0,  0, 15, 15, 15 ],
+      [ 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39 ]
+    ]
+  }
 
   def join("game:lobby", _payload, socket) do
     if authorized?(socket) do
@@ -11,26 +28,22 @@ defmodule FearWeb.GameChannel do
     end
   end
 
+  def handle_in("get_map", _, socket) do
+    {:reply, {:ok, @map}, socket}
+  end
+
   def handle_info(:joined, socket) do
     username = socket.assigns[:username]
+
+    push socket, "presence_state", Presence.list(socket)
+    {:ok, _} = Presence.track(socket, username, %{
+      online_at: inspect(System.system_time(:seconds))
+    })
+
     push socket, "self_joined", %{name: username}
     broadcast socket, "user_joined", %{name: username}
 
-    push socket, "map", %{
-      data: [
-        [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-        [  0,  1,  2,  3,  0,  0,  0,  1,  2,  3,  0 ],
-        [  0,  5,  6,  7,  0,  0,  0,  5,  6,  7,  0 ],
-        [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-        [  0,  0,  0, 14, 13, 14,  0,  0,  0,  0,  0 ],
-        [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-        [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-        [  0,  0, 14, 14, 14, 14, 14,  0,  0,  0, 15 ],
-        [  0,  0,  0,  0,  0,  0,  0,  0,  0, 15, 15 ],
-        [ 35, 36, 37,  0,  0,  0,  0,  0, 15, 15, 15 ],
-        [ 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39 ]
-      ]
-    }
+    push socket, "map", @map
 
     {:noreply, socket}
   end

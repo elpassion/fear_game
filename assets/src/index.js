@@ -12,6 +12,9 @@ gameChannel.on("map", console.log);
 gameChannel.on("user_joined", console.log);
 gameChannel.on("self_joined", console.log);
 
+gameChannel.push("get_map")
+  .receive("ok", (msg) => console.log(msg));
+
 
 const config = {
   type: Phaser.AUTO,
