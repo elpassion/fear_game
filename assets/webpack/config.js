@@ -9,7 +9,7 @@ const dirNode = path.join(__dirname, '../node_modules')
 const dirApp = path.join(__dirname, '../src')
 const dirAssets = path.join(__dirname, '../assets')
 
-const appHtmlTitle = 'Webpack4 Phaser3 Boilerplate'
+const appHtmlTitle = 'FEAR!'
 
 /**
  * Webpack Configuration
