@@ -17,7 +17,7 @@ defmodule Fear.Game do
   def get_map() do
     for i <- 0..@max do
       for j <- 0..@max do
-        Board.get_field({i, j})
+        Board.get_field({j, i})
         |> fields_to_int
       end
     end

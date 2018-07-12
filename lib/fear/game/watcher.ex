@@ -13,8 +13,8 @@ defmodule Fear.Game.Watcher do
 
   def handle_info(:start, state) do
 
-    for i <- 3..15 do
-      for j <- 6..18 do
+    for i <- 0..15 do
+      for j <- 5..20 do
         Board.add({i, j}, :field, {i + j*15, 1}, false)
       end
     end
