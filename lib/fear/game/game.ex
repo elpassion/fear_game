@@ -30,22 +30,29 @@ defmodule Fear.Game do
 
   def move(username, direction) do
     user = Users.get(username)
-    move_time = round(100000 / (2 * (user.speed - 1) + 120))
-    diff = NaiveDateTime.diff(NaiveDateTime.utc_now(), user.last_move, :millisecond)
-    if diff >= move_time * 0.85 do # allow slightly faster movement for smooth movement on frontend
-      case Board.move(:user, username, direction) do
-        {:ok, position} ->
-          user = update_user_position(user, position)
-          if Board.get_field(position) == [] do
-            user = kill_user(user)
-            {:lose, user, move_time}
-          else
-            {:ok, position, move_time}
-          end
-        {:error, position} -> {:error, position}
+
+    if user.alive? do
+      move_time = round(100000 / (2 * (user.speed - 1) + 120))
+      diff = NaiveDateTime.diff(NaiveDateTime.utc_now(), user.last_move, :millisecond)
+      if diff >= move_time * 0.85 do # allow slightly faster movement for smooth movement on frontend
+        case Board.move(:user, username, direction) do
+          {:ok, position} ->
+            if Board.get_field(position) |> Enum.count == 1 do
+              user =
+                update_user_position(user, position)
+                |> kill_user()
+              {:lose, user, move_time}
+            else
+              update_user_position(user, position)
+              {:ok, position, move_time}
+            end
+          {:error, position} -> {:error, position}
+        end
+      else
+        {:error, {user.x, user.y}}
       end
     else
-      {:error, {user.x, user.y}}
+      {:dead, user}
     end
   end
 
@@ -62,7 +69,8 @@ defmodule Fear.Game do
   end
 
   defp kill_user(user) do
-    Users.update(user.name, alive?: false)
+    Board.delete(:user, user.name)
+    Users.update(user.name, alive?: false, x: nil, y: nil)
   end
 
 end

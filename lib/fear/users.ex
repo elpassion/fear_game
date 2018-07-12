@@ -44,7 +44,11 @@ defmodule Fear.Users do
   end
 
   def handle_call({:all}, _from, state) do
-    {:reply, Enum.map(state, fn {_, v} -> v end), state}
+    users =
+      state
+      |> Enum.map(fn {_, v} -> v end)
+      |> Enum.filter(& &1.alive?)
+    {:reply, users, state}
   end
 
   defp get_user(state, username) do
