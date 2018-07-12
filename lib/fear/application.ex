@@ -12,9 +12,9 @@ defmodule Fear.Application do
       supervisor(FearWeb.Endpoint, []),
       # Start your own worker by calling: Fear.Worker.start_link(arg1, arg2, arg3)
       # worker(Fear.Worker, [arg1, arg2, arg3]),
-      Fear.Users,
-      Fear.Board,
-      Fear.Game.Watcher
+      # Fear.Users,
+      # Fear.Board,
+      # Fear.Game.Watcher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
