@@ -1,7 +1,7 @@
 defmodule FearWeb.GameChannel do
   use FearWeb, :channel
   alias Fear.Presence
-  alias Fear.Users
+  alias Fear.Game
 
   @map %{
     data: [
@@ -21,7 +21,7 @@ defmodule FearWeb.GameChannel do
 
   def join("game:lobby", _payload, socket) do
     if authorized?(socket) do
-      user = Users.join(socket.assigns[:username])
+      user = Game.join(socket.assigns[:username])
       Process.send_after(self(), {:joined, user}, 0)
       {:ok, socket}
     else
