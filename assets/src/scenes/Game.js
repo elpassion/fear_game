@@ -1,28 +1,29 @@
 import Phaser from 'phaser'
 import { Logo } from '../images'
 import { Mushroom } from '../sprites'
+import client from '../client';
 
 export default class extends Phaser.Scene {
   constructor () {
     super({ key: 'Game' })
+
+    this.levelData;
   }
 
   create () {
-    this.logo = new Logo(this, 400, 150)
-    this.tweens.add({
-      targets: this.logo,
-      y: 450,
-      duration: 2000,
-      ease: 'Power2',
-      yoyo: true,
-      loop: -1
-    })
+    client.push('get_map')
+      .receive("ok", (level) => {
+        this.levelData = level.data;
 
-    this.mushroom = new Mushroom(this, 0, 0)
-    Phaser.Display.Align.In.Center(this.mushroom, this.add.zone(400, 300, 800, 600))
+        const map = this.make.tilemap({ data: this.levelData, tileWidth: 16, tileHeight: 16 });
+        const tiles = map.addTilesetImage('mario-tiles');
+        const layer = map.createStaticLayer(0, tiles, 0, 0);
+      } );
+
+      this.cameras.main.zoom = 0.5;
   }
 
   update () {
-    this.mushroom.update()
+
   }
 }
