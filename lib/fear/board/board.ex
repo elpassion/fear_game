@@ -40,6 +40,10 @@ defmodule Fear.Board do
     GenServer.call(__MODULE__, {:move, type, object, direction})
   end
 
+  def get_field(position) do
+    GenServer.call(__MODULE__, {:get_field, position})
+  end
+
   def get_fields(position, range) do
     GenServer.call(__MODULE__, {:get_fields, position, range})
   end
@@ -80,6 +84,11 @@ defmodule Fear.Board do
       container = Container.move(container, new_position, type, object)
       {:reply, {:ok, new_position}, container}
     end
+  end
+
+  def handle_call({:get_field, position}, _from, %Container{} = container) do
+    field = Container.get_field(container, position)
+    {:reply, field, container}
   end
 
   def handle_call({:get_fields, {x, y}, range}, _from, %Container{} = container) do

@@ -3,22 +3,6 @@ defmodule FearWeb.GameChannel do
   alias Fear.Presence
   alias Fear.Game
 
-  @map %{
-    data: [
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  1,  2,  3,  0,  0,  0,  1,  2,  3,  0 ],
-      [  0,  5,  6,  7,  0,  0,  0,  5,  6,  7,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0, 14, 13, 14,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0, 14, 14, 14, 14, 14,  0,  0,  0, 15 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0, 15, 15 ],
-      [ 35, 36, 37,  0,  0,  0,  0,  0, 15, 15, 15 ],
-      [ 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39 ]
-    ]
-  }
-
   def join("game:lobby", _payload, socket) do
     if authorized?(socket) do
       user = Game.join(socket.assigns[:username])
@@ -30,7 +14,7 @@ defmodule FearWeb.GameChannel do
   end
 
   def handle_in("get_map", _, socket) do
-    {:reply, {:ok, @map}, socket}
+    {:reply, {:ok, %{data: Game.get_map}}, socket}
   end
 
   def handle_info({:joined, user}, socket) do
@@ -41,7 +25,8 @@ defmodule FearWeb.GameChannel do
       online_at: inspect(System.system_time(:seconds)),
       name: user.name,
       x: user.x,
-      y: user.y
+      y: user.y,
+      speed: user.speed
     })
 
     {:noreply, socket}

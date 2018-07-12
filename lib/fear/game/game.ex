@@ -2,6 +2,7 @@ defmodule Fear.Game do
   alias Fear.{Board, Users}
 
   @starting_position {1, 1}
+  @max 200
 
   def join(username) do
     user =
@@ -13,19 +14,19 @@ defmodule Fear.Game do
     update_user_position(user, position)
   end
 
-  def get_fields({x, y}) do
-    Board.get_fields({x, y}, 100)
-    |> Enum.map(fn {position, field} -> {position, load_field(field)} end)
+  def get_map() do
+    for i <- 0..@max do
+      for j <- 0..@max do
+        Board.get_field({i, j})
+        |> fields_to_int
+      end
+    end
   end
 
-  defp load_field(field) do
-    field |> Enum.map(&load_object/1)
+  defp fields_to_int([]), do: 0
+  defp fields_to_int(fields) do
+    if Enum.any?(fields, fn {{type, _object}, _blocks} -> type == :field end), do: 1, else: 0
   end
-
-  defp load_object({{:user, username}, _blocks}) do
-    Users.get(username)
-  end
-  defp load_object(object), do: object
 
   def move(username, direction) do
     user = Users.get(username)
