@@ -20,10 +20,28 @@ export default class extends Phaser.Scene {
         const layer = map.createStaticLayer(0, tiles, 0, 0);
       } );
 
-      this.cameras.main.zoom = 0.5;
+    this.addBackground();
   }
 
   update () {
-
+    this.updateBackground();
   }
+
+  addBackground() {
+    let width = this.sys.game.config.width * 2; // TODO: Why do we have to multiply those values by 2? :/
+    let height = this.sys.game.config.height * 2;
+
+    this.backgrounds = [
+      this.add.tileSprite(0, 0, width, height, 'background-stars-nebula'),
+      this.add.tileSprite(0, 0, width, height, 'background-stars-small').setAlpha(0.25),
+      this.add.tileSprite(128, 128, width, height, 'background-stars-small').setAlpha(0.5),
+      this.add.tileSprite(0, 0, width, height, 'background-stars-large').setAlpha(0.5),
+      this.add.tileSprite(128, 128, width, height, 'background-stars-large').setAlpha(0.75)
+    ]
+  }
+
+  updateBackground() {
+    this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
+  }
+
 }
