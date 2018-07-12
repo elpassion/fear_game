@@ -1,6 +1,6 @@
 {
   "name": "fear_game",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Fear game created during hackathon by EL Passion",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev webpack-dev-server --progress --mode development --config webpack/config.dev.js",
