@@ -1,6 +1,4 @@
 import Phaser from 'phaser'
-import { Logo } from '../images'
-import { Mushroom } from '../sprites'
 import client from '../client';
 
 export default class extends Phaser.Scene {
