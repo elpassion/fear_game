@@ -7,6 +7,12 @@ const config = {
   parent: 'fear-game',
   width: 800,
   height: 600,
+  physics: {
+  default: 'arcade',
+    arcade: {
+      debug: true,
+    },
+  },
   scene: [
     Boot,
     Game

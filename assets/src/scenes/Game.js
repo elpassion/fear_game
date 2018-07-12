@@ -1,28 +1,34 @@
 import Phaser from 'phaser'
 import client from '../client';
+import Player from '../sprites/Player';
+import makeAnimations from '../utils/animations';
 
 export default class extends Phaser.Scene {
   constructor () {
     super({ key: 'Game' })
-
-    this.levelData;
   }
 
   create () {
+
+    this.player = new Player({
+      scene: this,
+      x: 0,
+      y: 0,
+      key: 'player',
+    });
     client.push('get_map')
       .receive("ok", (level) => {
-        this.levelData = level.data;
-
-        const map = this.make.tilemap({ data: this.levelData, tileWidth: 16, tileHeight: 16 });
-        const tiles = map.addTilesetImage('mario-tiles');
-        const layer = map.createStaticLayer(0, tiles, 0, 0);
+        this.generateMap(level.data);
       } );
+    makeAnimations(this);
 
     this.addBackground();
   }
 
   update () {
     this.updateBackground();
+    this.player.update();
+    this.anims.play(this.animation, true);
   }
 
   addBackground() {
@@ -36,6 +42,12 @@ export default class extends Phaser.Scene {
       this.add.tileSprite(0, 0, width, height, 'background-stars-large').setAlpha(0.5),
       this.add.tileSprite(128, 128, width, height, 'background-stars-large').setAlpha(0.75)
     ]
+  }
+
+  generateMap(levelData) {
+    const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
+    const tiles = map.addTilesetImage('mario-tiles');
+    const layer = map.createStaticLayer(0, tiles, 0, 0);
   }
 
   updateBackground() {
