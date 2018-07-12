@@ -15,7 +15,7 @@ defmodule Fear.Game.Watcher do
 
     for i <- 0..15 do
       for j <- 5..20 do
-        Board.add({i, j}, :field, {i + j*15, 1}, false)
+        Board.add({i, j}, :field, {i + j*20, 1}, false)
       end
     end
 
