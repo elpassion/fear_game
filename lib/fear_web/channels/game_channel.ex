@@ -1,7 +1,6 @@
 defmodule FearWeb.GameChannel do
   use FearWeb, :channel
-  alias Fear.Presence
-  alias Fear.Game
+  alias Fear.{Game, Users}
 
   def join("game:lobby", _payload, socket) do
     if authorized?(socket) do
@@ -33,16 +32,12 @@ defmodule FearWeb.GameChannel do
   end
 
   def handle_info({:joined, user}, socket) do
+    push socket, "self_joined", Map.from_struct(user)
+    broadcast socket, "user_joined", Map.from_struct(user)
 
-    push socket, "presence_state", Presence.list(socket)
-
-    {:ok, _} = Presence.track(socket, user.name, %{
-      online_at: inspect(System.system_time(:seconds)),
-      name: user.name,
-      x: user.x,
-      y: user.y,
-      speed: user.speed
-    })
+    Enum.each(Users.all(), fn u ->
+      if user.name != u.name, do: push socket, "user_joined", Map.from_struct(u)
+    end)
 
     {:noreply, socket}
   end
