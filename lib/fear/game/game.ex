@@ -23,9 +23,9 @@ defmodule Fear.Game do
     end
   end
 
-  defp fields_to_int([]), do: 0
+  defp fields_to_int([]), do: -1
   defp fields_to_int(fields) do
-    if Enum.any?(fields, fn {{type, _object}, _blocks} -> type == :field end), do: 1, else: 0
+    if Enum.any?(fields, fn {{type, _object}, _blocks} -> type == :field end), do: 1, else: -1
   end
 
   def move(username, direction) do
