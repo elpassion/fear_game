@@ -1,7 +1,6 @@
 import { Socket, Presence } from 'phoenix';
 
 const socket = new Socket("ws://0.0.0.0:4000/socket", {params: {username: "test" + Math.floor(Math.random() * 1000)}});
-socket.connect();
 
 const gameChannel = socket.channel("game:lobby");
 gameChannel.join();
@@ -16,4 +15,7 @@ gameChannel.on("presence_diff", diff => {
   presences = Presence.syncDiff(presences, diff)
 })
 
-export default gameChannel;
+export {
+  gameChannel,
+  socket
+};

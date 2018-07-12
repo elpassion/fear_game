@@ -4,6 +4,7 @@ class Player extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, config.key);
     this.scene = config.scene;
+    this.setOrigin(0.0);
     config.scene.physics.world.enable(this);
     this.scene.add.existing(this);
 
@@ -27,8 +28,8 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   animations() {
-    if (this.body.velocity.x === 0 && this.body.velocity.y === 0)
-      this.animation = 'stand';
+    // if (this.body.velocity.x === 0 && this.body.velocity.y === 0)
+    //   this.animation = 'stand';
     if (this.body.velocity.x > 0 && (this.body.velocity.y >= 0 || this.body.velocity.y < 0))
       this.animation = 'right';
     if (this.body.velocity.x < 0 && (this.body.velocity.y >= 0 || this.body.velocity.y < 0))
