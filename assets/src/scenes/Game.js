@@ -36,12 +36,17 @@ export default class extends Phaser.Scene {
     let height = this.sys.game.config.height * 2;
 
     this.backgrounds = [
-      this.add.tileSprite(0, 0, width, height, 'background-stars-nebula'),
+      this.add.tileSprite(0, 0, width, height, 'background-stars-nebula').setAlpha(0.5),
       this.add.tileSprite(0, 0, width, height, 'background-stars-small').setAlpha(0.25),
-      this.add.tileSprite(128, 128, width, height, 'background-stars-small').setAlpha(0.5),
-      this.add.tileSprite(0, 0, width, height, 'background-stars-large').setAlpha(0.5),
-      this.add.tileSprite(128, 128, width, height, 'background-stars-large').setAlpha(0.75)
+      this.add.tileSprite(0, 0, width, height, 'background-stars-small').setAlpha(0.5),
+      this.add.tileSprite(0, 0, width, height, 'background-stars-large').setAlpha(0.25),
+      this.add.tileSprite(0, 0, width, height, 'background-stars-large').setAlpha(0.5)
     ]
+
+    this.backgrounds.forEach((background) => { 
+      background.tilePositionX = Math.random() * background.width;
+      background.tilePositionY = Math.random() * background.height;
+    });
   }
 
   generateMap(levelData) {
