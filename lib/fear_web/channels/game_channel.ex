@@ -37,7 +37,10 @@ defmodule FearWeb.GameChannel do
 
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track(socket, username, %{
-      online_at: inspect(System.system_time(:seconds))
+      online_at: inspect(System.system_time(:seconds)),
+      name: username,
+      x: 1,
+      y: 1
     })
 
     push socket, "self_joined", %{name: username}
