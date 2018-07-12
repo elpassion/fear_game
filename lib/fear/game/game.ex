@@ -70,7 +70,7 @@ defmodule Fear.Game do
 
   defp kill_user(user) do
     Board.delete(:user, user.name)
-    Users.update(user.name, alive?: false, x: nil, y: nil)
+    Users.update(user.name, alive?: false)
   end
 
 end

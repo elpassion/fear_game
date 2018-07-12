@@ -23,6 +23,7 @@ defmodule FearWeb.GameChannel do
         push socket, "dead", %{x: user.x, y: user.y, name: user.name}
         {:noreply, socket}
       {:lose, user, move_time} ->
+        broadcast socket, "move", %{x: user.x, y: user.y, name: user.name, move_time: move_time}
         broadcast socket, "lose", %{x: user.x, y: user.y, name: user.name, move_time: move_time}
         {:noreply, socket}
       {:ok, {x, y}, move_time} ->
