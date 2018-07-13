@@ -1,1 +1,2 @@
-export { default as Mushroom } from './Mushroom'
+export { default as PLayer } from './PLayer'
+export { default as CatBullet } from './CatBullet'
