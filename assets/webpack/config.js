@@ -99,7 +99,17 @@ module.exports = {
       {
         test: [ /\.vert$/, /\.frag$/ ],
         use: 'raw-loader'
-      }
+      },
+      // SOUND
+      {
+        test: /\.(mp3|oog|wmv|json)$/,
+        loader: 'file-loader',
+        include: dirAssets,
+        exclude: dirNode,
+        options: {
+          name: '[path][name].[ext]'
+        }
+      },
     ]
   },
   optimization: {

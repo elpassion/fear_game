@@ -6,6 +6,7 @@ import marioTiles from '../../assets/images/super-mario.png';
 import backgroundStarsNebula from '../../assets/images/background/stars-nebula.jpg'
 import backgroundStarsSmall from '../../assets/images/background/stars-small.png'
 import backgroundStarsLarge from '../../assets/images/background/stars-large.png'
+import collect from '../../assets/sounds/collect.mp3';
 
 export default class extends Phaser.Scene {
   constructor () {
@@ -29,6 +30,7 @@ export default class extends Phaser.Scene {
     this.load.image('map', map);
     this.load.spritesheet('player', player, { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('catBullet', catBullet, { frameWidth: 16, frameHeight: 16 });
+    this.load.audio('shootCat', collect);
   }
 
   create () {
