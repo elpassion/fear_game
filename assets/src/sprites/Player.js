@@ -1,9 +1,11 @@
 import Keyboard from '../utils/keyboard';
+import { CatBullet } from '../sprites';
 
 class Player extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, config.key);
     this.scene = config.scene;
+    this.name = config.name;
     this.setOrigin(0.0);
     config.scene.physics.world.enable(this);
     this.scene.add.existing(this);
@@ -11,13 +13,26 @@ class Player extends Phaser.GameObjects.Sprite {
 
     this.controls = new Keyboard(this, this.scene);
     this.animation = 'downStanding';
+    this.firingAngle = 270;
     this.alive = true;
+    this.catBullets = [];
     this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
 
   create() {
-    // this.body.setCollideWorldBounds(true); // we can add it, but our bounds are within tilemap
+    this.catBullets = this.scene.physics.add.group({
+      classType: CatBullet,
+      maxSize: 10,
+    });
+  }
+
+  fireCat() {
+    const bullet = new CatBullet(this.scene);
+    this.catBullets.add(bullet);
+    bullet.fire(this);
+
+    setTimeout(() => bullet.hit(), bullet.lifespan);
   }
 
   update() {

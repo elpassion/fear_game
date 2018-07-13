@@ -6,15 +6,16 @@ import makeAnimations from '../utils/animations';
 export default class extends Phaser.Scene {
   constructor () {
     super({ key: 'Game' });
-
-    this.players = {};
-
-    gameChannel.on('self_joined', (player) => {
-      this.addMainPlayer(player);
-    });
   }
 
   create () {
+    this.playersGroup = this.physics.add.group({
+      classType: Player,
+    });
+    this.otherPlayers = this.physics.add.group({
+      classType: Player,
+    });
+
     socket.connect();
 
     gameChannel.push('get_map')
@@ -22,21 +23,25 @@ export default class extends Phaser.Scene {
         this.generateMap(level.data);
       } );
 
-    // TODO MOVE SOCKETS
-    // setTimeout(() => {
-    //   gameChannel.push('move', { dir: 'n' });
-    // }, 3000);
     gameChannel.on('move', (data) => {
       data.move_time && this.animateMove(data);
     });
     gameChannel.on('lose', (data) => {
-      console.log('lost', data);
       this.animateMove(data, true);
     });
 
     gameChannel.on('user_joined', (data) => {
-      console.log('user joined');
       this.addPlayer(data);
+    });
+
+    gameChannel.on('self_joined', (player) => {
+      this.addMainPlayer(player);
+    });
+
+    gameChannel.on('destroy_field', (point) => {
+      if (this.layer && this.layer.layer) {
+        this.layer.layer.data[point.y][point.x] = -1;
+      }
     });
 
     makeAnimations(this);
@@ -45,23 +50,23 @@ export default class extends Phaser.Scene {
   }
 
   update () {
-    this.updateBackground();
+    this.renderBackground();
     this.player && this.player.update();
     this.anims.play(this.animation, true);
   }
 
   addBackground() {
-    let width = this.sys.game.config.width * 4; // TODO: Why do we have to multiply those values by 2? :/
-    let height = this.sys.game.config.height * 4;
-    const startXPoint = width / 2;
-    const startYPoint = height / 2;
+    const gameWidth  = this.sys.game.config.width;
+    const gameHeight = this.sys.game.config.height;
+    const x          = gameWidth / 2;
+    const y          = gameHeight / 2;
 
     this.backgrounds = [
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-nebula').setAlpha(0.5),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-small').setAlpha(0.25),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-small').setAlpha(0.5),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-large').setAlpha(0.25),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-large').setAlpha(0.5)
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-nebula').setAlpha(0.5).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-small').setAlpha(0.25).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-small').setAlpha(0.5).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-large').setAlpha(0.25).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-large').setAlpha(0.5).setScrollFactor(0)
     ];
 
     this.backgrounds.forEach((background) => {
@@ -138,45 +143,83 @@ export default class extends Phaser.Scene {
   }
 
   addMainPlayer(data) {
-    console.log(data);
-    this.player = new Player({
-      scene: this,
-      x: data.x * 16,
-      y: data.y * 16,
-      key: 'player',
-    });
+    this.player = this._createPlayer(data);
 
-    this.players[data.name] = this.player;
+    this.physics.add.collider(
+      this.player.catBullets,
+      this.otherPlayers,
+      (cat, player) => {
+        console.log(cat);
+        console.log(player);
+        cat.hit();
+        // player.destroy();
+      },
+      null,
+      this,
+    );
+
+    this.playersGroup.add(this.player);
+    // this.player = this.addPlayer(data);
+    console.log(this.player);
     this.cameras.main.startFollow(this.player);
   }
 
-  addPlayer(data) {
-    this.players[data.name] = new Player({
+  _createPlayer(data) {
+    return new Player({
       scene: this,
       x: data.x * 16,
       y: data.y * 16,
       key: 'player',
-    });
+      name: data.name
+    }).setTint(this.colorFromString(data.name, 0.5));
   }
 
-  updateBackground() {
-    this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
+  addPlayer(data) {
+    const player = this._createPlayer(data);
+
+    this.playersGroup.add(player);
+    this.otherPlayers.add(player);
   }
 
+  renderBackground() {
+    this.backgrounds.forEach((background, index) => { background.tilePositionY -= 0.25 * (index + 1) });
+  }
+
+  getPlayerFromGroup(name) {
+    return this.playersGroup.getChildren().find( player => {
+      return player.name === name;
+    })
+  }
 
   animateMove(data, lost = null) {
-    const movingPlayer = this.players[data.name];
+    const movingPlayer = this.getPlayerFromGroup(data.name);
     let direction = '';
 
     if(movingPlayer.y / 16 === data.y) {
       if(movingPlayer.x / 16 < data.x) {
         direction = 'e';
+      } else if(movingPlayer.x / 16 > data.x) {
+        direction = 'w';
+      } else if (lost) {
+        movingPlayer.animation = 'death';
+        movingPlayer.playAnimation();
+        movingPlayer.die();
+        delete this.players[data.name];
+        return;
       } else {
         direction = 'w';
       }
     } else {
       if(movingPlayer.y / 16 < data.y) {
         direction = 's';
+      } else if(movingPlayer.y / 16 > data.y) {
+        direction = 'n';
+      } else if (lost) {
+        movingPlayer.animation = 'death';
+        movingPlayer.playAnimation();
+        movingPlayer.die();
+        delete this.players[data.name];
+        return;
       } else {
         direction = 'n';
       }
@@ -184,36 +227,57 @@ export default class extends Phaser.Scene {
 
     let movement = {};
 
-    if(direction === 'n') movement = { start: 'up', complete: 'upStanding' };
-    if(direction === 's') movement = { start: 'down', complete: 'downStanding' };
-    if(direction === 'e') movement = { start: 'right', complete: 'rightStanding' };
-    if(direction === 'w') movement = { start: 'left', complete: 'leftStanding' };
+    if(direction === 'n') movement = { start: 'up', complete: 'upStanding', angle: 270 };
+    if(direction === 's') movement = { start: 'down', complete: 'downStanding', angle: 90 };
+    if(direction === 'e') movement = { start: 'right', complete: 'rightStanding', angle: 0 };
+    if(direction === 'w') movement = { start: 'left', complete: 'leftStanding', angle: 180 };
 
     const tween = this.tweens.add({
-      targets: this.players[data.name],
+      targets: movingPlayer,
       x: data.x * 16,
       y: data.y * 16,
       duration: data.move_time,
       ease: 'Linear',
       onStart: () => {
-        this.players[data.name].animation = movement.start;
-        this.players[data.name].playAnimation();
+        movingPlayer.firingAngle = movement.angle;
+        movingPlayer.animation = movement.start;
+        movingPlayer.playAnimation();
       },
       onComplete: () => {
         if (lost) {
-          this.players[data.name].animation = 'death';
+          movingPlayer.animation = 'death';
         } else {
-          this.players[data.name].animation = movement.complete;
+          movingPlayer.animation = movement.complete;
         }
 
-        this.players[data.name].playAnimation();
+        movingPlayer.playAnimation();
 
         if (lost) {
-          this.players[data.name].die();
-          delete this.players[data.name];
+          movingPlayer.die();
+          this.playersGroup.remove(movingPlayer);
         }
       }
     });
+  }
+
+  colorFromString(string, saturation = 1.0) {
+    const hsv = Phaser.Display.Color.HSVColorWheel(saturation);
+
+    return hsv[Math.abs(this.hashCode(string, 360))].color;
+  }
+
+  hashCode(string, tableSize) {
+    var hash = 0, len = string.length, i, c;
+
+    if (len == 0) return hash;
+
+    for (i = 0; i < len; i++) {
+      c = string.charCodeAt(i);
+      hash = ((hash<<5) - hash) + c;
+      hash &= hash; // Convert to 32bit integer
+    }
+
+    return tableSize ? hash % tableSize : hash;
   }
 
 }

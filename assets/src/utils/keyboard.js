@@ -15,11 +15,15 @@ class PlayerKeyboard {
     // so we have to disable every other input exept arrows
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.keyboard = scene.input.keyboard;
+    // this.space = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     scene.input.keyboard.removeKey(16);
-    scene.input.keyboard.removeKey(32);
+    // scene.input.keyboard.removeKey(32);
   }
 
   update() {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+      this.player.fireCat();
+    }
     if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
       gameChannel.push('move', { dir: 'w' });
     } else if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
