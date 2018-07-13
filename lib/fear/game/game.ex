@@ -1,16 +1,12 @@
 defmodule Fear.Game do
   alias Fear.{Board, Users}
 
-  @starting_position {1, 1}
   @max 200
 
   def join(username) do
-    user =
-      username
-      |> Users.join
-      |> check_position
-
-    {:ok, position} = Board.add_user({user.x, user.y}, username)
+    position = find_free_spot()
+    user = Users.join(username, position)
+    {:ok, position} = Board.add_user(position, username)
     update_user_position(user, position)
   end
 
@@ -21,11 +17,6 @@ defmodule Fear.Game do
         |> fields_to_int
       end
     end
-  end
-
-  defp fields_to_int([]), do: -1
-  defp fields_to_int(fields) do
-    if Enum.any?(fields, fn {{type, _object}, _blocks} -> type == :field end), do: 1, else: -1
   end
 
   def move(username, direction) do
@@ -56,13 +47,15 @@ defmodule Fear.Game do
     end
   end
 
-  defp check_position(%{x: nil} = user) do
-    update_user_position(user, @starting_position)
+  defp find_free_spot() do
+    Board.get_positions(:field)
+    |> Enum.random
   end
-  defp check_position(%{y: nil} = user) do
-    update_user_position(user, @starting_position)
+
+  defp fields_to_int([]), do: -1
+  defp fields_to_int(fields) do
+    if Enum.any?(fields, fn {{type, _object}, _blocks} -> type == :field end), do: 1, else: -1
   end
-  defp check_position(user), do: user
 
   defp update_user_position(user, {x, y}) do
     Users.update(user.name, x: x, y: y, last_move: NaiveDateTime.utc_now())
