@@ -51,23 +51,23 @@ export default class extends Phaser.Scene {
   }
 
   update () {
-    this.updateBackground();
+    this.renderBackground();
     this.player && this.player.update();
     this.anims.play(this.animation, true);
   }
 
   addBackground() {
-    let width = this.sys.game.config.width * 4; // TODO: Why do we have to multiply those values by 2? :/
-    let height = this.sys.game.config.height * 4;
-    const startXPoint = width / 2;
-    const startYPoint = height / 2;
+    const gameWidth  = this.sys.game.config.width;
+    const gameHeight = this.sys.game.config.height;
+    const x          = gameWidth / 2;
+    const y          = gameHeight / 2;
 
     this.backgrounds = [
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-nebula').setAlpha(0.5),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-small').setAlpha(0.25),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-small').setAlpha(0.5),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-large').setAlpha(0.25),
-      this.add.tileSprite(this.sys.game.config.width, this.sys.game.config.height, width, height, 'background-stars-large').setAlpha(0.5)
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-nebula').setAlpha(0.5).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-small').setAlpha(0.25).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-small').setAlpha(0.5).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-large').setAlpha(0.25).setScrollFactor(0),
+      this.add.tileSprite(x, y, gameWidth, gameHeight, 'background-stars-large').setAlpha(0.5).setScrollFactor(0)
     ];
 
     this.backgrounds.forEach((background) => {
@@ -125,7 +125,7 @@ export default class extends Phaser.Scene {
     }).setTint(this.colorFromString(data.name, 0.5));
   }
 
-  updateBackground() {
+  renderBackground() {
     this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
   }
 
