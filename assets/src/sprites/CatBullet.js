@@ -1,16 +1,20 @@
-class CatBullet extends Phaser.GameObjects.Image {
+class CatBullet extends Phaser.GameObjects.Sprite {
   constructor(scene) {
-    super(scene);
+    super(scene, 0, 0, 'catBullet');
     this.scene = scene;
     Phaser.GameObjects.Image.call(this, scene, 0, 0, 'catBullet');
+
+    this.scene.add.existing(this);
+
 
     this.setOrigin(0.5);
     scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.setDepth(1);
 
-    this.speed = 200;
+    this.speed = 100;
     this.lifespan = 3000;
+    this.animation = 'catFly';
   }
 
   fire(gun) {
@@ -22,6 +26,8 @@ class CatBullet extends Phaser.GameObjects.Image {
       x: gun.x + 8,
       y: gun.y + 8,
     };
+
+    this.playAnimation();
 
     this.setPosition(catPosition.x, catPosition.y);
     const angle = Phaser.Math.DegToRad(gun.firingAngle);
@@ -37,6 +43,11 @@ class CatBullet extends Phaser.GameObjects.Image {
 
   hit() {
     this.destroy();
+  }
+
+  playAnimation() {
+    console.log(this);
+    this.anims.play(this.animation, true);
   }
 }
 

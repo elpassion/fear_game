@@ -56,4 +56,10 @@ export default function makeAnimations(scene) {
     frames: scene.anims.generateFrameNames('player', { start: 16, end: 19 }),
     frameRate: 5,
   });
+
+  scene.anims.create({
+    key: 'catFly',
+    frames: scene.anims.generateFrameNames('catBullet', { start: 0, end: 1 }),
+    ...defaultConfig,
+  });
 }
