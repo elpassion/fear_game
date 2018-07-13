@@ -18,8 +18,8 @@ class CatBullet extends Phaser.GameObjects.Image {
     this.rotation = gun.firingAngle;
 
     const catPosition = {
-      x: gun.x + 8 + (Math.floor(Math.random() * 5) - 5),
-      y: gun.y + 8 + (Math.floor(Math.random() * 5) - 5),
+      x: gun.x + 8,
+      y: gun.y + 8,
     };
 
     this.setPosition(catPosition.x, catPosition.y);

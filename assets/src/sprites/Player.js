@@ -1,5 +1,6 @@
 import Keyboard from '../utils/keyboard';
 import { CatBullet } from '../sprites';
+import { gameChannel } from '../client';
 
 class Player extends Phaser.GameObjects.Sprite {
   constructor(config) {
@@ -18,6 +19,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.catBullets = [];
     this.body.immovable = true;
     this.body.moves = false;
+    this.direction = '';
     this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
@@ -34,6 +36,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.catBullets.add(bullet);
     bullet.fire(this);
 
+    gameChannel.push('fire', { dir: this.direction, x: Math.floor(this.x / 16), y: Math.floor(this.y / 16) });
     setTimeout(() => bullet.hit(), bullet.lifespan);
   }
 

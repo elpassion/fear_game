@@ -63,7 +63,7 @@ export default class extends Phaser.Scene {
         //   onComplete() {
         //   }
         // });
-        this.layer.layer.data[point.y][point.x] = -1;
+        this.layer.layer.data[point.y][point.x] = 1;
       }
     });
 
@@ -272,6 +272,7 @@ export default class extends Phaser.Scene {
       onStart: () => {
         if(!push) {
           movingPlayer.firingAngle = movement.angle;
+          movingPlayer.direction = direction;
           movingPlayer.animation = movement.start;
           movingPlayer.playAnimation();
         }
