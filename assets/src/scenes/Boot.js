@@ -7,6 +7,7 @@ import backgroundStarsNebula from '../../assets/images/background/stars-nebula.j
 import backgroundStarsSmall from '../../assets/images/background/stars-small.png'
 import backgroundStarsLarge from '../../assets/images/background/stars-large.png'
 import collect from '../../assets/sounds/collect.mp3';
+import music from '../../assets/sounds/music.mp3';
 
 export default class extends Phaser.Scene {
   constructor () {
@@ -31,6 +32,7 @@ export default class extends Phaser.Scene {
     this.load.spritesheet('player', player, { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('catBullet', catBullet, { frameWidth: 16, frameHeight: 16 });
     this.load.audio('shootCat', collect);
+    this.load.audio('music', music);
   }
 
   create () {

@@ -9,6 +9,11 @@ export default class extends Phaser.Scene {
   }
 
   create () {
+    this.music = this.sound.add('music');
+    this.shootCat = this.sound.add('shootCat', { loop: false });
+
+    music.play();
+
     this.playersGroup = this.physics.add.group({
       classType: Player,
     });
@@ -16,7 +21,6 @@ export default class extends Phaser.Scene {
       classType: Player,
     });
 
-    this.shootCat = this.sound.add('shootCat', { loop: false });
 
     socket.connect();
 
