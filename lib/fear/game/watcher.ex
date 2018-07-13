@@ -2,7 +2,7 @@ defmodule Fear.Game.Watcher do
   use GenServer
   alias Fear.{Board, Game}
 
-  @interval 1000
+  @interval 300
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -17,9 +17,7 @@ defmodule Fear.Game.Watcher do
   def handle_info(:destroy_field, state) do
     Process.send_after(self(), :destroy_field, @interval)
 
-    {x, y} =
-      Board.get_positions(:field)
-      |> Enum.random
+    {x, y} = find_edge_point()
 
     Board.get_field({x, y})
 
@@ -48,6 +46,23 @@ defmodule Fear.Game.Watcher do
     end)
 
     {:noreply, state}
+  end
+
+  defp find_edge_point() do
+    points = Board.get_positions(:field)
+
+    points_map =
+      points
+      |> Enum.map(& {&1, true})
+      |> Enum.into(%{})
+
+    points
+    |> Enum.filter(&is_edge(points_map, &1))
+    |> Enum.random()
+  end
+
+  defp is_edge(map, {x, y}) do
+    map[{x-1, y}] == nil || map[{x+1, y}] == nil || map[{x, y-1}] == nil || map[{x, y+1}] == nil
   end
 
   defp gen_map(map, {x, y}, _size, _iteration) when x < 0 or y < 0, do: map
