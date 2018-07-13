@@ -50,8 +50,8 @@ defmodule FearWeb.GameChannel do
     end
   end
 
-  def handle_in("fire", %{"dir" => direction, "username" => username, "x" => x, "y" => y}, socket) do
-    broadcast socket, "fire", %{x: x, y: y, dir: direction, username: username}
+  def handle_in("fire", %{"dir" => direction, "x" => x, "y" => y}, socket) do
+    broadcast socket, "fire", %{x: x, y: y, dir: direction, username: socket.assigns[:username]}
     {:noreply, socket}
   end
 
