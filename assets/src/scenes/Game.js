@@ -70,9 +70,26 @@ export default class extends Phaser.Scene {
   }
 
   generateMap(levelData) {
-    console.log(levelData);
+    // levelData[5][0] = 3;
+    levelData.forEach((tiles, row)=>{
+      tiles.forEach( (tile, column)=>{ 
+        if(levelData[row][column]!==-1) {
+          if( levelData[row-1][column]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(6, 8);
+          } else if ( levelData[row+1][column]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(21, 23);
+          } else if ( levelData[row][column+1]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(18, 20);
+          } else {
+            levelData[row][column] = Phaser.Math.Between(0, 5);
+          }
+        }
+      })
+    })
+
+    console.log('levelData', levelData);
     const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
-    const tiles = map.addTilesetImage('mario-tiles');
+    const tiles = map.addTilesetImage('map');
     this.layer = map.createDynamicLayer(0, tiles, 0, 0);
 
     const tile = this.layer.layer.data[0];
