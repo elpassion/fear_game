@@ -50,19 +50,13 @@ export default class extends Phaser.Scene {
       this.animateMove(data, true, true);
     });
 
+    gameChannel.on('fire', (data) => {
+      console.log(this.player.name, data.username, this.player.name !== data.username);
+      data.username && this.player.name !== data.username && this.getPlayerFromGroup(data.username).fireCat(true);
+    });
+
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
-        // this.tweens.add({
-        //   target: tile,
-        //   scaleX: 2,
-        //   scaleY: 2,
-        //   duration: 500,
-        //   ease: 'Sine.easeInOut',
-        //   onComplete() {
-        //   }
-        // });
-        // this.layer.layer.data[point.y][point.x].index = -1;
-
         gameChannel.push('get_map')
           .receive("ok", (level) => {
             this.generateMap(level.data);

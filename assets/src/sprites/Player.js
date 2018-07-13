@@ -40,14 +40,13 @@ class Player extends Phaser.GameObjects.Sprite {
     });
   }
 
-  fireCat() {
+  fireCat(noPush) {
     this.shootSounds[Math.floor(Math.random() * this.shootSounds.length)].play();
-
     const bullet = new CatBullet(this.scene);
     this.catBullets.add(bullet);
     bullet.fire(this);
 
-    gameChannel.push('fire', { dir: this.direction, x: Math.floor(this.x / 16), y: Math.floor(this.y / 16) });
+    !noPush && gameChannel.push('fire', { dir: this.direction, x: Math.floor(this.x / 16), y: Math.floor(this.y / 16) });
     setTimeout(() => bullet.hit(), bullet.lifespan);
   }
 
