@@ -12,6 +12,8 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene.sound.add('miau3', { loop: false })
     ];
 
+    this.deathSound = this.scene.sound.add('miau4', { loop: false });
+
     this.scene = config.scene;
     this.name = config.name;
     this.setOrigin(0.0);
@@ -62,6 +64,8 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   die() {
+    this.deathSound.play();
+
     this.alive = false;
   }
 }
