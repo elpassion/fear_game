@@ -5,6 +5,7 @@ class Player extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, config.key);
     this.scene = config.scene;
+    this.name = config.name;
     this.setOrigin(0.0);
     config.scene.physics.world.enable(this);
     this.scene.add.existing(this);
@@ -14,6 +15,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.animation = 'downStanding';
     this.firingAngle = 270;
     this.alive = true;
+    this.catBullets = [];
     this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
@@ -21,19 +23,16 @@ class Player extends Phaser.GameObjects.Sprite {
   create() {
     this.catBullets = this.scene.physics.add.group({
       classType: CatBullet,
+      maxSize: 10,
     });
-
-    // this.scene.input.on('pointermove', (pointer) => {
-    //   const angle = ((Math.atan2(pointer.y, pointer.x) * 180) / Math.PI); // my player change position all the time with movement, so center of caemra is the same positiosn ans player's
-    //   this.angle = parseInt(angle, 10);
-    //   console.log(this.angle);
-    // });
   }
 
   fireCat() {
     const bullet = new CatBullet(this.scene);
     this.catBullets.add(bullet);
     bullet.fire(this);
+
+    setTimeout(() => bullet.hit(), bullet.lifespan);
   }
 
   update() {
