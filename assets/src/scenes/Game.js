@@ -16,6 +16,8 @@ export default class extends Phaser.Scene {
       classType: Player,
     });
 
+    this.shootCat = this.sound.add('shootCat', { loop: false });
+
     socket.connect();
 
     gameChannel.push('get_map')
@@ -153,15 +155,6 @@ export default class extends Phaser.Scene {
     this.layer = map.createDynamicLayer(0, tiles, 0, 0);
 
     const tile = this.layer.layer.data[0];
-
-    // TODO REMOVING TILES
-    // 'removing' tiles
-    // for(let i = 0; i < tile.length; i++) {
-    //   console.log(tile);
-    //   setTimeout(() => {
-    //     tile[i].index = -1;
-    //   }, 1000 * i);
-    // }
   }
 
   addMainPlayer(data) {
@@ -171,6 +164,7 @@ export default class extends Phaser.Scene {
       this.player.catBullets,
       this.otherPlayers,
       (cat, player) => {
+        this.shootCat.play();
         cat.hit();
 
         let hitData = {
@@ -222,6 +216,7 @@ export default class extends Phaser.Scene {
   }
 
   animateMove(data, lost = false, push = false) {
+    this.shootCat.play();
     const movingPlayer = this.getPlayerFromGroup(data.name);
     let direction = '';
 
