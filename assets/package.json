@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=dev webpack-dev-server --progress --mode development --config webpack/config.dev.js",
     "build": "webpack --progress --mode production --config webpack/config.build.js",
-    "lint": "eslint ./src/**/*.js"
+    "lint": "eslint ./src/**/*.js",
+    "watch": "webpack --mode development --watch-stdin --config webpack/config.watch.js"
   },
   "repository": {
     "type": "git",
