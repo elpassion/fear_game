@@ -50,6 +50,11 @@ defmodule FearWeb.GameChannel do
     end
   end
 
+  def handle_in("fire", %{"dir" => direction, "username" => username, "x" => x, "y" => y}, socket) do
+    broadcast socket, "fire", %{x: x, y: y, dir: direction, username: username}
+    {:noreply, socket}
+  end
+
   def handle_info({:joined, user}, socket) do
     push socket, "self_joined", Map.from_struct(user)
     broadcast socket, "user_joined", Map.from_struct(user)
