@@ -111,14 +111,7 @@ export default class extends Phaser.Scene {
   }
 
   addMainPlayer(data) {
-    this.player = new Player({
-      scene: this,
-      x: data.x * 16,
-      y: data.y * 16,
-      key: 'player',
-      name: data.name
-    });
-
+    this.player = this._createPlayer(data);
 
     this.physics.add.collider(
       this.player.catBullets,
@@ -134,18 +127,23 @@ export default class extends Phaser.Scene {
     );
 
     this.playersGroup.add(this.player);
-    this.player = this.addPlayer(data);
+    // this.player = this.addPlayer(data);
+    console.log(this.player);
     this.cameras.main.startFollow(this.player);
   }
 
-  addPlayer(data) {
-    const player = new Player({
+  _createPlayer(data) {
+    return new Player({
       scene: this,
       x: data.x * 16,
       y: data.y * 16,
       key: 'player',
       name: data.name
     }).setTint(this.colorFromString(data.name, 0.5));
+  }
+
+  addPlayer(data) {
+    const player = this._createPlayer(data);
 
     this.playersGroup.add(player);
     this.otherPlayers.add(player);
