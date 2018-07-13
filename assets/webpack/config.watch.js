@@ -12,11 +12,4 @@ module.exports = merge(webpackConfig, {
     publicPath: '/'
   },
 
-  plugins: [
-    new CleanWebpackPlugin(
-      ['static'],
-      { root: path.join(__dirname, '../../priv') }
-    )
-  ]
-
 })
