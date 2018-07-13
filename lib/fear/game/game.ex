@@ -29,9 +29,8 @@ defmodule Fear.Game do
         case Board.move(:user, username, direction) do
           {:ok, position} ->
             if Board.get_field(position) |> Enum.count == 1 do
-              user =
-                update_user_position(user, position)
-                |> kill_user()
+              user = update_user_position(user, position)
+              user = kill_user(user.name)
               {:lose, user, move_time}
             else
               update_user_position(user, position)
@@ -47,6 +46,11 @@ defmodule Fear.Game do
     end
   end
 
+  def kill_user(username) do
+    Board.delete(:user, username)
+    Users.update(username, alive?: false)
+  end
+
   defp find_free_spot() do
     Board.get_positions(:field)
     |> Enum.random
@@ -59,11 +63,6 @@ defmodule Fear.Game do
 
   defp update_user_position(user, {x, y}) do
     Users.update(user.name, x: x, y: y, last_move: NaiveDateTime.utc_now())
-  end
-
-  defp kill_user(user) do
-    Board.delete(:user, user.name)
-    Users.update(user.name, alive?: false)
   end
 
 end

@@ -39,6 +39,12 @@ export default class extends Phaser.Scene {
       this.addPlayer(data);
     });
 
+    gameChannel.on('destroy_field', (point) => {
+      if (this.layer && this.layer.layer) {
+        this.layer.layer.data[point.y][point.x] = -1;
+      }
+    });
+
     makeAnimations(this);
 
     this.addBackground();
@@ -122,12 +128,28 @@ export default class extends Phaser.Scene {
     if(movingPlayer.y / 16 === data.y) {
       if(movingPlayer.x / 16 < data.x) {
         direction = 'e';
+      } else if(movingPlayer.x / 16 > data.x) {
+        direction = 'w';
+      } else if (lost) {
+        movingPlayer.animation = 'death';
+        movingPlayer.playAnimation();
+        movingPlayer.die();
+        delete this.players[data.name];
+        return;
       } else {
         direction = 'w';
       }
     } else {
       if(movingPlayer.y / 16 < data.y) {
         direction = 's';
+      } else if(movingPlayer.y / 16 > data.y) {
+        direction = 'n';
+      } else if (lost) {
+        movingPlayer.animation = 'death';
+        movingPlayer.playAnimation();
+        movingPlayer.die();
+        delete this.players[data.name];
+        return;
       } else {
         direction = 'n';
       }
