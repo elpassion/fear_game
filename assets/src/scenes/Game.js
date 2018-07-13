@@ -6,15 +6,16 @@ import makeAnimations from '../utils/animations';
 export default class extends Phaser.Scene {
   constructor () {
     super({ key: 'Game' });
-
-    this.players = {};
-
-    gameChannel.on('self_joined', (player) => {
-      this.addMainPlayer(player);
-    });
   }
 
   create () {
+    this.playersGroup = this.physics.add.group({
+      classType: Player,
+    });
+    this.otherPlayers = this.physics.add.group({
+      classType: Player,
+    });
+
     socket.connect();
 
     gameChannel.push('get_map')
@@ -22,21 +23,19 @@ export default class extends Phaser.Scene {
         this.generateMap(level.data);
       } );
 
-    // TODO MOVE SOCKETS
-    // setTimeout(() => {
-    //   gameChannel.push('move', { dir: 'n' });
-    // }, 3000);
     gameChannel.on('move', (data) => {
       data.move_time && this.animateMove(data);
     });
     gameChannel.on('lose', (data) => {
-      console.log('lost', data);
       this.animateMove(data, true);
     });
 
     gameChannel.on('user_joined', (data) => {
-      console.log('user joined');
       this.addPlayer(data);
+    });
+
+    gameChannel.on('self_joined', (player) => {
+      this.addMainPlayer(player);
     });
 
     gameChannel.on('destroy_field', (point) => {
@@ -78,21 +77,21 @@ export default class extends Phaser.Scene {
 
   generateMap(levelData) {
     // levelData[5][0] = 3;
-    levelData.forEach((tiles, row)=>{
-      tiles.forEach( (tile, column)=>{
-        if(levelData[row][column]!==-1) {
-          if( levelData[row-1][column]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(6, 8);
-          } else if ( levelData[row+1][column]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(21, 23);
-          } else if ( levelData[row][column+1]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(18, 20);
-          } else {
-            levelData[row][column] = Phaser.Math.Between(0, 5);
-          }
-        }
-      })
-    })
+    // levelData.forEach((tiles, row)=>{
+    //   tiles.forEach( (tile, column)=>{
+    //     if(levelData[row][column]!==-1) {
+    //       if( levelData[row-1][column]<0 ) {
+    //         levelData[row][column] = Phaser.Math.Between(6, 8);
+    //       } else if ( levelData[row+1][column]<0 ) {
+    //         levelData[row][column] = Phaser.Math.Between(21, 23);
+    //       } else if ( levelData[row][column+1]<0 ) {
+    //         levelData[row][column] = Phaser.Math.Between(18, 20);
+    //       } else {
+    //         levelData[row][column] = Phaser.Math.Between(0, 5);
+    //       }
+    //     }
+    //   })
+    // })
 
     console.log('levelData', levelData);
     const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
@@ -112,26 +111,58 @@ export default class extends Phaser.Scene {
   }
 
   addMainPlayer(data) {
+    this.player = new Player({
+      scene: this,
+      x: data.x * 16,
+      y: data.y * 16,
+      key: 'player',
+      name: data.name
+    });
+
+
+    this.physics.add.collider(
+      this.player.catBullets,
+      this.otherPlayers,
+      (cat, player) => {
+        console.log(cat);
+        console.log(player);
+        cat.hit();
+        // player.destroy();
+      },
+      null,
+      this,
+    );
+
+    this.playersGroup.add(this.player);
     this.player = this.addPlayer(data);
     this.cameras.main.startFollow(this.player);
   }
 
   addPlayer(data) {
-    return this.players[data.name] = new Player({
+    const player = new Player({
       scene: this,
       x: data.x * 16,
       y: data.y * 16,
-      key: 'player'
+      key: 'player',
+      name: data.name
     }).setTint(this.colorFromString(data.name, 0.5));
+
+    this.playersGroup.add(player);
+    this.otherPlayers.add(player);
   }
 
   renderBackground() {
     this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
   }
 
+  getPlayerFromGroup(name) {
+    return this.playersGroup.getChildren().find( player => {
+      return player.name === name;
+    })
+  }
 
   animateMove(data, lost = null) {
-    const movingPlayer = this.players[data.name];
+    const movingPlayer = this.getPlayerFromGroup(data.name);
     let direction = '';
 
     if(movingPlayer.y / 16 === data.y) {
@@ -172,28 +203,28 @@ export default class extends Phaser.Scene {
     if(direction === 'w') movement = { start: 'left', complete: 'leftStanding', angle: 180 };
 
     const tween = this.tweens.add({
-      targets: this.players[data.name],
+      targets: movingPlayer,
       x: data.x * 16,
       y: data.y * 16,
       duration: data.move_time,
       ease: 'Linear',
       onStart: () => {
-        this.players[data.name].firingAngle = movement.angle;
-        this.players[data.name].animation = movement.start;
-        this.players[data.name].playAnimation();
+        movingPlayer.firingAngle = movement.angle;
+        movingPlayer.animation = movement.start;
+        movingPlayer.playAnimation();
       },
       onComplete: () => {
         if (lost) {
-          this.players[data.name].animation = 'death';
+          movingPlayer.animation = 'death';
         } else {
-          this.players[data.name].animation = movement.complete;
+          movingPlayer.animation = movement.complete;
         }
 
-        this.players[data.name].playAnimation();
+        movingPlayer.playAnimation();
 
         if (lost) {
-          this.players[data.name].die();
-          delete this.players[data.name];
+          movingPlayer.die();
+          this.playersGroup.remove(movingPlayer);
         }
       }
     });
@@ -207,7 +238,7 @@ export default class extends Phaser.Scene {
 
   hashCode(string, tableSize) {
     var hash = 0, len = string.length, i, c;
-    
+
     if (len == 0) return hash;
 
     for (i = 0; i < len; i++) {
