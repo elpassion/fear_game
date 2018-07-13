@@ -89,25 +89,17 @@ export default class extends Phaser.Scene {
   }
 
   addMainPlayer(data) {
-    console.log(data);
-    this.player = new Player({
-      scene: this,
-      x: data.x * 16,
-      y: data.y * 16,
-      key: 'player',
-    });
-
-    this.players[data.name] = this.player;
+    this.player = this.addPlayer(data);
     this.cameras.main.startFollow(this.player);
   }
 
   addPlayer(data) {
-    this.players[data.name] = new Player({
+    return this.players[data.name] = new Player({
       scene: this,
       x: data.x * 16,
       y: data.y * 16,
-      key: 'player',
-    });
+      key: 'player'
+    }).setTint(this.colorFromString(data.name, 0.5));
   }
 
   updateBackground() {
@@ -165,6 +157,26 @@ export default class extends Phaser.Scene {
         }
       }
     });
+  }
+
+  colorFromString(string, saturation = 1.0) {
+    const hsv = Phaser.Display.Color.HSVColorWheel(saturation);
+
+    return hsv[Math.abs(this.hashCode(string, 360))].color;
+  }
+
+  hashCode(string, tableSize) {
+    var hash = 0, len = string.length, i, c;
+    
+    if (len == 0) return hash;
+
+    for (i = 0; i < len; i++) {
+      c = string.charCodeAt(i);
+      hash = ((hash<<5) - hash) + c;
+      hash &= hash; // Convert to 32bit integer
+    }
+
+    return tableSize ? hash % tableSize : hash;
   }
 
 }
