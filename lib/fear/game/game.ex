@@ -46,6 +46,34 @@ defmodule Fear.Game do
     end
   end
 
+  def fly(username, direction) do
+    user = Users.get(username)
+
+    if !user.flying? do
+      Users.update(username, last_move: NaiveDateTime.utc_now(), flying?: true)
+
+      Board.move(:user, username, direction)
+      Board.move(:user, username, direction)
+
+      case Board.move(:user, username, direction) do
+        {:ok, position} ->
+          if Board.get_field(position) |> Enum.count == 1 do
+            user = update_user_position(user, position)
+            user = kill_user(user.name)
+            {:lose, user, 450}
+          else
+            update_user_position(user, position)
+            user = Users.update(username, flying?: false)
+            {:ok, user, 450}
+          end
+        {:error, position} -> {:error, position}
+      end
+    else
+      {:flying, user}
+    end
+
+  end
+
   def kill_user(username) do
     Board.delete(:user, username)
     Users.update(username, alive?: false)

@@ -1,5 +1,5 @@
 defmodule Fear.User do
-  defstruct [:name, :x, :y, :last_move, speed: 300, alive?: true]
+  defstruct [:name, :x, :y, :last_move, speed: 300, alive?: true, flying?: false]
 
   def new(name, {x, y}) do
     %__MODULE__{name: name, x: x, y: y}
