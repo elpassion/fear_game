@@ -24,17 +24,13 @@ class PlayerKeyboard {
       gameChannel.push('move', { dir: 'w' });
     } else if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
       gameChannel.push('move', { dir: 'e' });
-    } else {
-      // this.player.body.setVelocityX(0);
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
-      // this.player.body.setVelocityY(100);
       gameChannel.push('move', { dir: 's' });
     } else if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
-      // this.player.body.setVelocityY(-100);
       gameChannel.push('move', { dir: 'n' });
-    } else this.player.body.setVelocityY(0);
+    }
   }
 }
 
