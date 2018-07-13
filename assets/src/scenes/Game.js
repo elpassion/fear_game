@@ -38,6 +38,10 @@ export default class extends Phaser.Scene {
       this.addMainPlayer(player);
     });
 
+    gameChannel.on('fly', (data) => {
+      this.animateMove(data, false, true);
+    });
+
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
         // this.tweens.add({
@@ -177,7 +181,6 @@ export default class extends Phaser.Scene {
     );
 
     this.playersGroup.add(this.player);
-    // this.player = this.addPlayer(data);
     console.log(this.player);
     this.cameras.main.startFollow(this.player);
   }
@@ -209,7 +212,7 @@ export default class extends Phaser.Scene {
     })
   }
 
-  animateMove(data, lost = null) {
+  animateMove(data, lost = false, push = false) {
     const movingPlayer = this.getPlayerFromGroup(data.name);
     let direction = '';
 
@@ -222,7 +225,8 @@ export default class extends Phaser.Scene {
         movingPlayer.animation = 'death';
         movingPlayer.playAnimation();
         movingPlayer.die();
-        delete this.players[data.name];
+        this.playersGroup.remove(movingPlayer);
+        this.otherPlayers.remove(movingPlayer);
         return;
       } else {
         direction = 'w';
@@ -236,7 +240,8 @@ export default class extends Phaser.Scene {
         movingPlayer.animation = 'death';
         movingPlayer.playAnimation();
         movingPlayer.die();
-        delete this.players[data.name];
+        this.playersGroup.remove(movingPlayer);
+        this.otherPlayers.remove(movingPlayer);
         return;
       } else {
         direction = 'n';
@@ -257,15 +262,17 @@ export default class extends Phaser.Scene {
       duration: data.move_time,
       ease: 'Linear',
       onStart: () => {
-        movingPlayer.firingAngle = movement.angle;
-        movingPlayer.animation = movement.start;
-        movingPlayer.playAnimation();
+        if(!push) {
+          movingPlayer.firingAngle = movement.angle;
+          movingPlayer.animation = movement.start;
+          movingPlayer.playAnimation();
+        }
       },
       onComplete: () => {
         if (lost) {
           movingPlayer.animation = 'death';
         } else {
-          movingPlayer.animation = movement.complete;
+          if(!push) movingPlayer.animation = movement.complete;
         }
 
         movingPlayer.playAnimation();
@@ -273,6 +280,7 @@ export default class extends Phaser.Scene {
         if (lost) {
           movingPlayer.die();
           this.playersGroup.remove(movingPlayer);
+          this.otherPlayers.remove(movingPlayer);
         }
       }
     });

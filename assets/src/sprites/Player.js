@@ -16,6 +16,8 @@ class Player extends Phaser.GameObjects.Sprite {
     this.firingAngle = 270;
     this.alive = true;
     this.catBullets = [];
+    this.body.immovable = true;
+    this.body.moves = false;
     this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
