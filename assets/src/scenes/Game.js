@@ -77,9 +77,26 @@ export default class extends Phaser.Scene {
   }
 
   generateMap(levelData) {
-    console.log(levelData);
+    // levelData[5][0] = 3;
+    levelData.forEach((tiles, row)=>{
+      tiles.forEach( (tile, column)=>{
+        if(levelData[row][column]!==-1) {
+          if( levelData[row-1][column]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(6, 8);
+          } else if ( levelData[row+1][column]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(21, 23);
+          } else if ( levelData[row][column+1]<0 ) {
+            levelData[row][column] = Phaser.Math.Between(18, 20);
+          } else {
+            levelData[row][column] = Phaser.Math.Between(0, 5);
+          }
+        }
+      })
+    })
+
+    console.log('levelData', levelData);
     const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
-    const tiles = map.addTilesetImage('mario-tiles');
+    const tiles = map.addTilesetImage('map');
     this.layer = map.createDynamicLayer(0, tiles, 0, 0);
 
     const tile = this.layer.layer.data[0];
@@ -157,10 +174,10 @@ export default class extends Phaser.Scene {
 
     let movement = {};
 
-    if(direction === 'n') movement = { start: 'up', complete: 'upStanding' };
-    if(direction === 's') movement = { start: 'down', complete: 'downStanding' };
-    if(direction === 'e') movement = { start: 'right', complete: 'rightStanding' };
-    if(direction === 'w') movement = { start: 'left', complete: 'leftStanding' };
+    if(direction === 'n') movement = { start: 'up', complete: 'upStanding', angle: 270 };
+    if(direction === 's') movement = { start: 'down', complete: 'downStanding', angle: 90 };
+    if(direction === 'e') movement = { start: 'right', complete: 'rightStanding', angle: 0 };
+    if(direction === 'w') movement = { start: 'left', complete: 'leftStanding', angle: 180 };
 
     const tween = this.tweens.add({
       targets: this.players[data.name],
@@ -169,6 +186,7 @@ export default class extends Phaser.Scene {
       duration: data.move_time,
       ease: 'Linear',
       onStart: () => {
+        this.players[data.name].firingAngle = movement.angle;
         this.players[data.name].animation = movement.start;
         this.players[data.name].playAnimation();
       },
