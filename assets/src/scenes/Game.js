@@ -126,7 +126,7 @@ export default class extends Phaser.Scene {
   }
 
   renderBackground() {
-    this.backgrounds.forEach((background, index) => { background.tilePositionX -= 0.15 * (index + 1) });
+    this.backgrounds.forEach((background, index) => { background.tilePositionY -= 0.25 * (index + 1) });
   }
 
 
