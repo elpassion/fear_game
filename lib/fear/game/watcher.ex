@@ -2,7 +2,7 @@ defmodule Fear.Game.Watcher do
   use GenServer
   alias Fear.{Board, Game}
 
-  @interval 1000
+  @interval 300
   @size 500
 
   def start_link() do
@@ -74,6 +74,10 @@ defmodule Fear.Game.Watcher do
     count = if map[{x+1, y}] == nil, do: count + 1, else: count
     count = if map[{x, y-1}] == nil, do: count + 1, else: count
     count = if map[{x, y+1}] == nil, do: count + 1, else: count
+    count = if map[{x-1, y-1}] == nil, do: count + 1, else: count
+    count = if map[{x+1, y+1}] == nil, do: count + 1, else: count
+    count = if map[{x+1, y-1}] == nil, do: count + 1, else: count
+    count = if map[{x-1, y+1}] == nil, do: count + 1, else: count
     {{x,y}, count}
   end
 
