@@ -36,6 +36,20 @@ defmodule FearWeb.GameChannel do
     end
   end
 
+  def handle_in("hit", %{"dir" => direction, "username" => username}, socket) do
+    direction = String.to_existing_atom(direction)
+    case Game.fly(username, direction) do
+      {:lose, user, move_time} ->
+        broadcast socket, "fly_lose", %{x: user.x, y: user.y, name: user.name, move_time: move_time}
+        {:noreply, socket}
+      {:ok, user, move_time} ->
+        broadcast socket, "fly", %{x: user.x, y: user.y, name: user.name, move_time: move_time}
+        {:noreply, socket}
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
   def handle_info({:joined, user}, socket) do
     push socket, "self_joined", Map.from_struct(user)
     broadcast socket, "user_joined", Map.from_struct(user)
