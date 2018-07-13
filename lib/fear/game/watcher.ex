@@ -2,7 +2,7 @@ defmodule Fear.Game.Watcher do
   use GenServer
   alias Fear.{Board, Game}
 
-  @interval 300
+  @interval 500
   @size 500
 
   def start_link() do

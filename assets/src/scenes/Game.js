@@ -63,7 +63,12 @@ export default class extends Phaser.Scene {
         //   onComplete() {
         //   }
         // });
-        this.layer.layer.data[point.y][point.x] = 1;
+        // this.layer.layer.data[point.y][point.x].index = -1;
+
+        gameChannel.push('get_map')
+          .receive("ok", (level) => {
+            this.generateMap(level.data);
+          } );
       }
     });
 
@@ -99,9 +104,8 @@ export default class extends Phaser.Scene {
   }
 
   generateMap(levelData) {
-
-    for(var row=1; row<levelData.length-1; row++ ) {
-      for(var col=1; col<levelData[row].length-1; col++ ) {
+    for(var row=1; row<levelData.length - 1; row++ ) {
+      for(var col=1; col<levelData.length - 1; col++ ) {
         if(levelData[row][col]!==-1 && levelData[row][col] <37) {
 
           var up = levelData[row-1][col];
@@ -153,6 +157,8 @@ export default class extends Phaser.Scene {
         }
       }
     }
+
+    if (this.layer) this.layer.destroy();
 
     const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
     const tiles = map.addTilesetImage('map');
