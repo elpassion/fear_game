@@ -57,6 +57,7 @@ export default class extends Phaser.Scene {
 
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
+        this.layer.layer.data[point.y][point.x].index = -1;
         gameChannel.push('get_map')
           .receive("ok", (level) => {
             this.generateMap(level.data);

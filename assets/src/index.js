@@ -8,11 +8,12 @@ const config = {
   height: 272,
   pixelArt: true,
   zoom: 1.5,
+  antialias: false,
   physics: {
-  default: 'arcade',
-    arcade: {
-      // debug: true,
-    },
+    default: 'arcade',
+      arcade: {
+        // debug: true,
+      },
   },
   scene: [
     Boot,
