@@ -71,24 +71,56 @@ export default class extends Phaser.Scene {
   }
 
   generateMap(levelData) {
-    // levelData[5][0] = 3;
-    levelData.forEach((tiles, row)=>{
-      tiles.forEach( (tile, column)=>{ 
-        if(levelData[row][column]!==-1) {
-          if( levelData[row-1][column]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(6, 8);
-          } else if ( levelData[row+1][column]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(21, 23);
-          } else if ( levelData[row][column+1]<0 ) {
-            levelData[row][column] = Phaser.Math.Between(18, 20);
+
+    for(var row=1; row<levelData.length-1; row++ ) {
+      for(var col=1; col<levelData[row].length-1; col++ ) {
+        if(levelData[row][col]!==-1 && levelData[row][col] <37) {
+
+          var up = levelData[row-1][col];
+          var down = levelData[row+1][col];
+          var left = levelData[row][col-1];
+          var right = levelData[row][col+1];
+
+          if( up < 0 && left >= 0 && right >= 0 && down >= 0 ) {
+            levelData[row][col] = Phaser.Math.Between(6, 8);      // krawedz na gorze
+          } else if ( up >= 0 && left >= 0 && right >= 0 && down < 0 ) {
+            levelData[row][col] = Phaser.Math.Between(21, 23);    // krawedz na dole
+            // levelData[row+1][col] = Phaser.Math.Between(40, 42);;  // krawędź
+          } else if ( up >= 0 && left < 0 && right >= 0 && down >= 0 ) {
+            levelData[row][col] = Phaser.Math.Between(15, 17);    // krawedz lewa
+          } else if ( up >= 0 && left >= 0 && right < 0 && down >= 0 ) {
+            levelData[row][col] = Phaser.Math.Between(18, 20);    // krawedz prawa
+          } else if ( up < 0 && left >= 0 && right < 0 && down >= 0 ) {
+            levelData[row][col] = Phaser.Math.Between(12, 14);    // krawedz prawa & gora
+          } else if ( up >= 0 && left >= 0 && right < 0 && down < 0 ) {
+            levelData[row][col] = Phaser.Math.Between(26, 28);    // krawedz prawa & dół
+          } else if ( up < 0 && left < 0 && right >= 0 && down >= 0 ) {
+            levelData[row][col] = Phaser.Math.Between(9, 11);    // krawedz lewa & gora
+          } else if ( up >= 0 && left < 0 && right >= 0 && down < 0 ) {
+            levelData[row][col] = Phaser.Math.Between(29, 31);    // krawedz lewa & dół
+          } else if ( up >= 0 && left < 0 && right < 0 && down >= 0 ) {
+            levelData[row][col] = 24;    // krawedz prawa & lewa
+          } else if ( up < 0 && left >= 0 && right >= 0 && down < 0 ) {
+            levelData[row][col] = 25;    // krawedz gora & dol
+          } else if ( up >= 0 && left < 0 && right < 0 && down < 0 ) {
+            levelData[row][col] = 35;    // cypel dolny
+            // levelData[row+1][col] = 39;  // krawędź
+          } else if ( up < 0 && left < 0 && right < 0 && down >= 0 ) {
+            levelData[row][col] = 32;    // cypel gorny
+          } else if ( up < 0 && left < 0 && right >= 0 && down < 0 ) {
+            levelData[row][col] = 33;    // cypel lewy
+            // levelData[row+1][col] = 38;  // krawędź
+          } else if ( up < 0 && left >= 0 && right < 0 && down < 0 ) {
+            levelData[row][col] = 34;    // cypel prawy
+          } else if ( up < 0 && left < 0 && right < 0 && down < 0 ) {
+            levelData[row][col] = 36;    // wyspa
           } else {
-            levelData[row][column] = Phaser.Math.Between(0, 5);
+            levelData[row][col] = Phaser.Math.Between(0, 5);      // czysty kafel
           }
         }
-      })
-    })
+      }
+    }
 
-    console.log('levelData', levelData);
     const map = this.make.tilemap({ data: levelData, tileWidth: 16, tileHeight: 16 });
     const tiles = map.addTilesetImage('map');
     this.layer = map.createDynamicLayer(0, tiles, 0, 0);
