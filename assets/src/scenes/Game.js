@@ -86,39 +86,44 @@ export default class extends Phaser.Scene {
           var left = levelData[row][col-1];
           var right = levelData[row][col+1];
 
-          if( up < 0 && left >= 0 && right >= 0 && down >= 0 ) {
+          if( (up < 0 || up >=37) && left >= 0 && left < 37 && right >= 0 && right < 37 && down >= 0 && down < 37 ) {
             levelData[row][col] = Phaser.Math.Between(6, 8);      // krawedz na gorze
-          } else if ( up >= 0 && left >= 0 && right >= 0 && down < 0 ) {
+          } else if ( up >= 0 && up < 37 && left >= 0 && left < 37 && right >= 0 && right < 37 && down < 0 ) {
             levelData[row][col] = Phaser.Math.Between(21, 23);    // krawedz na dole
-            // levelData[row+1][col] = Phaser.Math.Between(40, 42);;  // krawędź
-          } else if ( up >= 0 && left < 0 && right >= 0 && down >= 0 ) {
+            levelData[row+1][col] = Phaser.Math.Between(40, 42);
+          } else if ( up >= 0 && up < 37 && (left < 0 || left >=37) && right >= 0 && right < 37 && down >= 0 && down < 37 ) {
             levelData[row][col] = Phaser.Math.Between(15, 17);    // krawedz lewa
-          } else if ( up >= 0 && left >= 0 && right < 0 && down >= 0 ) {
+          } else if ( up >= 0 && up < 37 && left >= 0 && left < 37 && (right < 0 || right >= 37) && down >= 0 && down < 37 ) {
             levelData[row][col] = Phaser.Math.Between(18, 20);    // krawedz prawa
-          } else if ( up < 0 && left >= 0 && right < 0 && down >= 0 ) {
+          } else if ( (up < 0 || up >=37) && left >= 0 && left < 37 && (right < 0 || right >=37) && down >= 0 && down < 37 ) {
             levelData[row][col] = Phaser.Math.Between(12, 14);    // krawedz prawa & gora
-          } else if ( up >= 0 && left >= 0 && right < 0 && down < 0 ) {
+          } else if ( up >= 0 && up < 37 && left >= 0 && left < 37 && (right < 0 || right >=37) && (down < 0 || down >=37) ) {
             levelData[row][col] = Phaser.Math.Between(26, 28);    // krawedz prawa & dół
-          } else if ( up < 0 && left < 0 && right >= 0 && down >= 0 ) {
+            levelData[row+1][col] = 37;
+          } else if ( (up < 0 || up >=37) && (left < 0 || left >=37) && right >= 0 && right < 37 && down >= 0 && down < 37 ) {
             levelData[row][col] = Phaser.Math.Between(9, 11);    // krawedz lewa & gora
-          } else if ( up >= 0 && left < 0 && right >= 0 && down < 0 ) {
+          } else if ( up >= 0 && up < 37 && (left < 0 || left >=37) && right >= 0 && right < 37 && (down < 0 || down >=37) ) {
             levelData[row][col] = Phaser.Math.Between(29, 31);    // krawedz lewa & dół
-          } else if ( up >= 0 && left < 0 && right < 0 && down >= 0 ) {
+            levelData[row+1][col] = 38;    // krawedz lewa & dół
+          } else if ( up >= 0 && up < 37 && (left < 0 || left >=37) && (right < 0 || right >=37) && down >= 0 && down < 37 ) {
             levelData[row][col] = 24;    // krawedz prawa & lewa
-          } else if ( up < 0 && left >= 0 && right >= 0 && down < 0 ) {
+          } else if ( (up < 0 || up >=37) && left >= 0 && left < 37 && right >= 0 && right < 37 && (down < 0 || down >=37) ) {
             levelData[row][col] = 25;    // krawedz gora & dol
-          } else if ( up >= 0 && left < 0 && right < 0 && down < 0 ) {
+            levelData[row+1][col] = Phaser.Math.Between(40, 42);    // krawedz gora & dol
+          } else if ( up >= 0 && up < 37 && (left < 0 || left >=37) && (right < 0 || right >=37) && (down < 0 || down >=37) ) {
             levelData[row][col] = 35;    // cypel dolny
-            // levelData[row+1][col] = 39;  // krawędź
-          } else if ( up < 0 && left < 0 && right < 0 && down >= 0 ) {
+            levelData[row+1][col] = 39;
+          } else if ( (up < 0 || up >=37) && (left < 0 || left >=37) && (right < 0 || right >=37) && down >= 0 && down < 37 ) {
             levelData[row][col] = 32;    // cypel gorny
-          } else if ( up < 0 && left < 0 && right >= 0 && down < 0 ) {
+          } else if ( (up < 0 || up >=37) && (left < 0 || left >=37) && right >= 0 && right < 37 && (down < 0 || down >=37) ) {
             levelData[row][col] = 33;    // cypel lewy
-            // levelData[row+1][col] = 38;  // krawędź
-          } else if ( up < 0 && left >= 0 && right < 0 && down < 0 ) {
+            levelData[row+1][col] = 38;
+          } else if ( (up < 0 || up >=37) && left >= 0 && left < 37 && (right < 0 || right >=37) && (down < 0 || down >=37) ) {
             levelData[row][col] = 34;    // cypel prawy
-          } else if ( up < 0 && left < 0 && right < 0 && down < 0 ) {
+            levelData[row+1][col] = 37;
+          } else if ( (up < 0 || up >=37) && (left < 0 || left >=37) && (right < 0 || right >=37) && (down < 0 || down >=37) ) {
             levelData[row][col] = 36;    // wyspa
+            levelData[row+1][col] = 39;
           } else {
             levelData[row][col] = Phaser.Math.Between(0, 5);      // czysty kafel
           }
