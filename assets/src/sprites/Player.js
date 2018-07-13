@@ -5,6 +5,15 @@ import { gameChannel } from '../client';
 class Player extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, config.key);
+
+    this.shootSounds = [
+      this.scene.sound.add('miau1', { loop: false }),
+      this.scene.sound.add('miau2', { loop: false }),
+      this.scene.sound.add('miau3', { loop: false })
+    ];
+
+    this.deathSound = this.scene.sound.add('miau4', { loop: false });
+
     this.scene = config.scene;
     this.name = config.name;
     this.setOrigin(0.0);
@@ -32,6 +41,8 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   fireCat() {
+    this.shootSounds[Math.floor(Math.random() * this.shootSounds.length)].play();
+
     const bullet = new CatBullet(this.scene);
     this.catBullets.add(bullet);
     bullet.fire(this);
@@ -53,6 +64,8 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   die() {
+    this.deathSound.play();
+
     this.alive = false;
   }
 }

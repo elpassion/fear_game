@@ -10,8 +10,6 @@ export default class extends Phaser.Scene {
 
   create () {
     this.music = this.sound.add('music');
-    this.shootCat = this.sound.add('shootCat', { loop: false });
-
     this.music.play();
 
     this.playersGroup = this.physics.add.group({
@@ -174,7 +172,6 @@ export default class extends Phaser.Scene {
       this.player.catBullets,
       this.otherPlayers,
       (cat, player) => {
-        this.shootCat.play();
         cat.hit();
 
         let hitData = {
@@ -226,7 +223,6 @@ export default class extends Phaser.Scene {
   }
 
   animateMove(data, lost = false, push = false) {
-    this.shootCat.play();
     const movingPlayer = this.getPlayerFromGroup(data.name);
     let direction = '';
 
