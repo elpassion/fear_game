@@ -42,6 +42,10 @@ export default class extends Phaser.Scene {
       this.animateMove(data, false, true);
     });
 
+    gameChannel.on('fly_lose', (data) => {
+      this.animateMove(data, true, true);
+    });
+
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
         // this.tweens.add({
