@@ -1,9 +1,9 @@
 defmodule Fear.Game.Watcher do
   use GenServer
-  alias Fear.{Board, Game}
+  alias Fear.{Board, Game, Users}
 
-  @interval 500
-  @size 500
+  @interval 300
+  @size 400
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -13,6 +13,25 @@ defmodule Fear.Game.Watcher do
     send(self(), :start)
     Process.send_after(self(), :destroy_field, @interval)
     {:ok, []}
+  end
+
+  def restart(size) do
+    GenServer.call(__MODULE__, {:restart, size})
+  end
+
+  def handle_call({:restart, size}, _from, state) do
+    Board.restart()
+    Users.restart()
+
+    start = {50, 50}
+
+    gen_map(%{start => true}, start, size, 1)
+    |> Enum.reduce(0, fn {{x, y}, true}, acc ->
+      Board.add({x, y}, :field, acc, false)
+      acc + 1
+    end)
+
+    {:reply, :ok, state}
   end
 
   def handle_info(:destroy_field, state) do
