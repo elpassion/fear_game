@@ -6,7 +6,10 @@ import marioTiles from '../../assets/images/super-mario.png';
 import backgroundStarsNebula from '../../assets/images/background/stars-nebula.jpg'
 import backgroundStarsSmall from '../../assets/images/background/stars-small.png'
 import backgroundStarsLarge from '../../assets/images/background/stars-large.png'
-import collect from '../../assets/sounds/collect.mp3';
+import miau1 from '../../assets/sounds/miau1.mp3';
+import miau2 from '../../assets/sounds/miau2.mp3';
+import miau3 from '../../assets/sounds/miau3.mp3';
+import miau4 from '../../assets/sounds/miau4.mp3';
 import music from '../../assets/sounds/music.mp3';
 
 export default class extends Phaser.Scene {
@@ -31,7 +34,10 @@ export default class extends Phaser.Scene {
     this.load.image('map', map);
     this.load.spritesheet('player', player, { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('catBullet', catBullet, { frameWidth: 16, frameHeight: 16 });
-    this.load.audio('shootCat', collect);
+    this.load.audio('miau1', miau1);
+    this.load.audio('miau2', miau2);
+    this.load.audio('miau3', miau3);
+    this.load.audio('miau4', miau4);
     this.load.audio('music', music);
   }
 
