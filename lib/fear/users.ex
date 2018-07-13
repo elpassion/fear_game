@@ -10,8 +10,8 @@ defmodule Fear.Users do
     {:ok, %{}}
   end
 
-  def join(username) do
-    GenServer.call(__MODULE__, {:join, username})
+  def join(username, position) do
+    GenServer.call(__MODULE__, {:join, username, position})
   end
 
   def update(username, opts \\ []) do
@@ -26,15 +26,15 @@ defmodule Fear.Users do
     GenServer.call(__MODULE__, {:all})
   end
 
-  def handle_call({:join, username}, _from, state) do
-    user = get_user(state, username)
+  def handle_call({:join, username, position}, _from, state) do
+    user = get_user(state, username, position)
     {:reply, user, Map.put(state, username, user)}
   end
 
   def handle_call({:update, username, opts}, _from, state) do
     user =
       state
-      |> get_user(username)
+      |> Map.get(username)
       |> User.update(opts)
     {:reply, user, Map.put(state, username, user)}
   end
@@ -51,9 +51,9 @@ defmodule Fear.Users do
     {:reply, users, state}
   end
 
-  defp get_user(state, username) do
+  defp get_user(state, username, position) do
     case Map.get(state, username) do
-      nil -> User.new(username)
+      nil -> User.new(username, position)
       user -> user
     end
   end

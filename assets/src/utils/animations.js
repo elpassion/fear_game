@@ -3,6 +3,7 @@ export default function makeAnimations(scene) {
     frameRate: 10,
     repeat: -1,
   };
+
   scene.anims.create({
     key: 'up',
     frames: scene.anims.generateFrameNames('player', { start: 4, end: 7 }),
@@ -48,5 +49,11 @@ export default function makeAnimations(scene) {
     key: 'leftStanding',
     frames: scene.anims.generateFrameNames('player', { start: 8, end: 8 }),
     ...defaultConfig,
+  });
+
+  scene.anims.create({
+    key: 'death',
+    frames: scene.anims.generateFrameNames('player', { start: 16, end: 19 }),
+    frameRate: 5,
   });
 }

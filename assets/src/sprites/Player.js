@@ -11,6 +11,8 @@ class Player extends Phaser.GameObjects.Sprite {
 
     this.controls = new Keyboard(this, this.scene);
     this.animation = 'downStanding';
+    this.alive = true;
+    this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
 
@@ -20,7 +22,18 @@ class Player extends Phaser.GameObjects.Sprite {
 
   update() {
     this.controls.update();
+  }
+
+  playAnimation() {
     this.anims.play(this.animation, true);
+  }
+
+  animComplete() {
+    !this.alive && this.destroy();
+  }
+
+  die() {
+    this.alive = false;
   }
 }
 

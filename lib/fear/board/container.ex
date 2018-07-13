@@ -17,6 +17,12 @@ defmodule Fear.Board.Container do
     |> List.keymember?(true, 1)
   end
 
+  def get_positions(%Container{details: details}, type) do
+    details
+    |> Enum.filter(fn {{t, _obj}, _pos} -> t == type end)
+    |> Enum.map(fn {_, pos} -> pos end)
+  end
+
   def get_position(%Container{details: details}, type, object) do
     Map.get(details, {type, object})
   end

@@ -29,6 +29,10 @@ export default class extends Phaser.Scene {
     gameChannel.on('move', (data) => {
       data.move_time && this.animateMove(data);
     });
+    gameChannel.on('lose', (data) => {
+      console.log('lost', data);
+      this.animateMove(data, true);
+    });
 
     gameChannel.on('user_joined', (data) => {
       console.log('user joined');
@@ -43,9 +47,6 @@ export default class extends Phaser.Scene {
   update () {
     this.updateBackground();
     this.player && this.player.update();
-    // Object.keys(this.players).map( key => {
-    //   this.players[key].update();
-    // });
     this.anims.play(this.animation, true);
   }
 
@@ -131,8 +132,7 @@ export default class extends Phaser.Scene {
   }
 
 
-  animateMove(data) {
-    console.log('move', data);
+  animateMove(data, lost = null) {
     const movingPlayer = this.players[data.name];
     let direction = '';
 
@@ -165,11 +165,21 @@ export default class extends Phaser.Scene {
       ease: 'Linear',
       onStart: () => {
         this.players[data.name].animation = movement.start;
-        this.players[data.name].update();
+        this.players[data.name].playAnimation();
       },
       onComplete: () => {
-        this.players[data.name].animation = movement.complete;
-        this.players[data.name].update();
+        if (lost) {
+          this.players[data.name].animation = 'death';
+        } else {
+          this.players[data.name].animation = movement.complete;
+        }
+
+        this.players[data.name].playAnimation();
+
+        if (lost) {
+          this.players[data.name].die();
+          delete this.players[data.name];
+        }
       }
     });
   }
