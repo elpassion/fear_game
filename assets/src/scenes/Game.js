@@ -40,6 +40,15 @@ export default class extends Phaser.Scene {
 
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
+        // this.tweens.add({
+        //   target: tile,
+        //   scaleX: 2,
+        //   scaleY: 2,
+        //   duration: 500,
+        //   ease: 'Sine.easeInOut',
+        //   onComplete() {
+        //   }
+        // });
         this.layer.layer.data[point.y][point.x] = -1;
       }
     });
@@ -149,10 +158,19 @@ export default class extends Phaser.Scene {
       this.player.catBullets,
       this.otherPlayers,
       (cat, player) => {
-        console.log(cat);
-        console.log(player);
         cat.hit();
-        // player.destroy();
+
+        let hitData = {
+          dir: '',
+          username: player.name,
+        };
+
+        if (cat.angle === 0) hitData.dir = 'n';
+        if (cat.angle === -90) hitData.dir =  'w';
+        if (cat.angle === -180) hitData.dir =  's';
+        if (cat.angle === 90) hitData.dir =  'e';
+
+        gameChannel.push('hit', hitData);
       },
       null,
       this,
