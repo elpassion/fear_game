@@ -52,6 +52,10 @@ defmodule Fear.Board do
     GenServer.call(__MODULE__, {:get_positions, type})
   end
 
+  def restart() do
+    GenServer.call(__MODULE__, {:restart})
+  end
+
   # SERVER
 
   def handle_call({:get_position, type, object}, _from, %Container{} = container) do
@@ -109,6 +113,10 @@ defmodule Fear.Board do
 
   def handle_call({:get_positions, type}, _from, %Container{} = container) do
     {:reply, Container.get_positions(container, type), container}
+  end
+
+  def handle_call({:restart}, _from, _container) do
+    {:reply, :ok, Container.new}
   end
 
 end
