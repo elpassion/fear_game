@@ -150,7 +150,7 @@ export default class extends Phaser.Scene {
             levelData[row][col] = 36;    // wyspa
             levelData[row+1][col] = 39;
           } else {
-            levelData[row][col] = Phaser.Math.Between(0, 5);      // czysty kafel
+            levelData[row][col] = (col * row) % 6; // Phaser.Math.Between(0, 5);      // czysty kafel
           }
         }
       }

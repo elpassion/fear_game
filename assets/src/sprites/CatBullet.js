@@ -7,6 +7,7 @@ class CatBullet extends Phaser.GameObjects.Image {
     this.setOrigin(0.5);
     scene.physics.world.enable(this);
     this.scene.add.existing(this);
+    this.setDepth(1);
 
     this.speed = 200;
     this.lifespan = 3000;

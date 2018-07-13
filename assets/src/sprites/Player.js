@@ -19,7 +19,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.0);
     config.scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    this.setDepth(1);
+    this.setDepth(2);
 
     this.controls = new Keyboard(this, this.scene);
     this.animation = 'downStanding';
