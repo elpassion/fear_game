@@ -65,7 +65,7 @@ defmodule Fear.Game.Watcher do
     map[{x-1, y}] == nil || map[{x+1, y}] == nil || map[{x, y-1}] == nil || map[{x, y+1}] == nil
   end
 
-  defp gen_map(map, {x, y}, _size, _iteration) when x < 0 or y < 0, do: map
+  defp gen_map(map, {x, y}, _size, _iteration) when x < 1 or y < 1, do: map
   defp gen_map(map, _, size, iteration) when iteration >= size, do: map
   defp gen_map(map, {x, y}, size, _iteration) do
 
