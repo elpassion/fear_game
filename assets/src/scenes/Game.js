@@ -286,6 +286,7 @@ export default class extends Phaser.Scene {
       ease: 'Linear',
       onStart: () => {
         if(!push) {
+          movingPlayer.lastMove = Date.now();
           movingPlayer.firingAngle = movement.angle;
           movingPlayer.direction = direction;
           movingPlayer.animation = movement.start;
@@ -296,7 +297,9 @@ export default class extends Phaser.Scene {
         if (lost) {
           movingPlayer.animation = 'death';
         } else {
-          if(!push) movingPlayer.animation = movement.complete;
+          if(!push && Date.now() > movingPlayer.lastMove + 100) {
+            movingPlayer.animation = movement.complete;
+          }
         }
 
         movingPlayer.playAnimation();

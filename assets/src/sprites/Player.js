@@ -30,6 +30,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.body.moves = false;
     this.direction = '';
     this.move_time = 139;
+    this.lastMove = Date.now();
     this.on('animationcomplete', this.animComplete, this);
     this.create();
   }
