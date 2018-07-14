@@ -58,10 +58,8 @@ export default class extends Phaser.Scene {
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
         this.layer.layer.data[point.y][point.x].index = -1;
-        gameChannel.push('get_map')
-          .receive("ok", (level) => {
-            this.generateMap(level.data);
-          } );
+        let data = this.getLevelData();
+        this.generateMap(data);
       }
     });
 
@@ -94,6 +92,21 @@ export default class extends Phaser.Scene {
       background.tilePositionX = Math.random() * background.width;
       background.tilePositionY = Math.random() * background.height;
     });
+  }
+
+  getLevelData() {
+    let data = new Array(this.layer.layer.data.length);
+    for(var row=0; row<this.layer.layer.data.length; row++ ) {
+      data[row] = new Array(this.layer.layer.data[row].length);
+      for(var col=0; col<this.layer.layer.data[row].length; col++ ) {
+        if (this.layer.layer.data[row][col].index >= 37) {
+          data[row][col] = -1;
+        } else {
+          data[row][col] = this.layer.layer.data[row][col].index;
+        }
+      }
+    }
+    return data;
   }
 
   generateMap(levelData) {
