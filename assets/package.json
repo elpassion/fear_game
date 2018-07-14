@@ -13,7 +13,7 @@
     "url": "https://github.com/elpassion/fear_game.git"
   },
   "dependencies": {
-    "phaser": "git+ssh://git@github.com/kelostrada/phaser.git",
+    "phaser": "git+https://git@github.com/kelostrada/phaser.git",
     "phoenix": "^1.3.0"
   },
   "devDependencies": {
