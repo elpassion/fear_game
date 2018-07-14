@@ -10,7 +10,7 @@ export default class extends Phaser.Scene {
 
   create () {
     this.music = this.sound.add('music');
-    this.music.play();
+    if (this.music.audioBuffer) this.music.play();
 
     this.playersGroup = this.physics.add.group({
       classType: Player,
