@@ -232,6 +232,11 @@ export default class extends Phaser.Scene {
 
   animateMove(data, lost = false, push = false) {
     const movingPlayer = this.getPlayerFromGroup(data.name);
+
+    if (this.player.name == data.name) {
+      this.player.move_time = data.move_time;
+    }
+
     let direction = '';
 
     if(movingPlayer.y / 16 === data.y) {

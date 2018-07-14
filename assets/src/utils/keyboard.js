@@ -24,15 +24,15 @@ class PlayerKeyboard {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.player.fireCat();
     }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
+    if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
       gameChannel.push('move', { dir: 'w' });
-    } else if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
+    } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
       gameChannel.push('move', { dir: 'e' });
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+    if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
       gameChannel.push('move', { dir: 's' });
-    } else if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+    } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
       gameChannel.push('move', { dir: 'n' });
     }
   }
