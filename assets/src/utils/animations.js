@@ -4,6 +4,7 @@ export default function makeAnimations(scene) {
     repeat: -1,
   };
 
+  // PLAYER
   scene.anims.create({
     key: 'up',
     frames: scene.anims.generateFrameNames('player', { start: 4, end: 7 }),
@@ -57,9 +58,22 @@ export default function makeAnimations(scene) {
     frameRate: 5,
   });
 
+  // CatBullets
   scene.anims.create({
     key: 'catFly',
     frames: scene.anims.generateFrameNames('catBullet', { start: 0, end: 1 }),
     ...defaultConfig,
+  });
+
+  scene.anims.create({
+    key: 'catFart',
+    frames: scene.anims.generateFrameNames('catFart', { start: 0, end: 4 }),
+    frameRate: 7,
+  });
+
+  scene.anims.create({
+    key: 'bang',
+    frames: scene.anims.generateFrameNames('bang', { start: 0, end: 5 }),
+    frameRate: 7,
   });
 }

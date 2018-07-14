@@ -1,3 +1,6 @@
+import Fart from './Fart';
+import Bang from './Bang';
+
 class CatBullet extends Phaser.GameObjects.Sprite {
   constructor(scene) {
     super(scene, 0, 0, 'catBullet');
@@ -10,11 +13,24 @@ class CatBullet extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5);
     scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    this.setDepth(1);
+    this.setDepth(2);
 
     this.speed = 100;
     this.lifespan = 3000;
     this.animation = 'catFly';
+    this.farts = null;
+
+    this.create();
+  }
+
+  create() {
+    this.farts = this.scene.physics.add.group({
+      classType: Fart,
+    });
+
+    this.intervalFarts = setInterval(() => {
+      this.farts.add(new Fart(this.scene, this.x, this.y));
+    }, 200);
   }
 
   fire(gun) {
@@ -35,18 +51,13 @@ class CatBullet extends Phaser.GameObjects.Sprite {
     this.angle = gun.firingAngle + 90;
   }
 
-  hide() {
-    this.setActive(false);
-    this.setVisible(false);
-    this.body.stop();
-  }
-
   hit() {
+    clearInterval(this.intervalFarts);
+    new Bang(this.scene, this.x, this.y);
     this.destroy();
   }
 
   playAnimation() {
-    console.log(this);
     this.anims.play(this.animation, true);
   }
 }
