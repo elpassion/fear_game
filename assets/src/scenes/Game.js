@@ -239,10 +239,13 @@ export default class extends Phaser.Scene {
 
     let direction = '';
 
-    if(movingPlayer.y / 16 === data.y) {
-      if(movingPlayer.x / 16 < data.x) {
+    let playerX = Math.round(movingPlayer.x / 16);
+    let playerY = Math.round(movingPlayer.y / 16);
+
+    if(playerY == data.y) {
+      if(playerX < data.x) {
         direction = 'e';
-      } else if(movingPlayer.x / 16 > data.x) {
+      } else if(playerX > data.x) {
         direction = 'w';
       } else if (lost) {
         movingPlayer.animation = 'death';
@@ -255,9 +258,9 @@ export default class extends Phaser.Scene {
         direction = 'w';
       }
     } else {
-      if(movingPlayer.y / 16 < data.y) {
+      if(playerY < data.y) {
         direction = 's';
-      } else if(movingPlayer.y / 16 > data.y) {
+      } else if(playerY > data.y) {
         direction = 'n';
       } else if (lost) {
         movingPlayer.animation = 'death';
@@ -297,7 +300,7 @@ export default class extends Phaser.Scene {
         if (lost) {
           movingPlayer.animation = 'death';
         } else {
-          if(!push && Date.now() > movingPlayer.lastMove + 100) {
+          if(!push && Date.now() - movingPlayer.lastMove > 50) {
             movingPlayer.animation = movement.complete;
           }
         }

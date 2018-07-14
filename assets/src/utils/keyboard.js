@@ -18,21 +18,30 @@ class PlayerKeyboard {
     // this.space = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     scene.input.keyboard.removeKey(16);
     // scene.input.keyboard.removeKey(32);
+
+    this.lastSend = Date.now();
   }
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.player.fireCat();
     }
+
+    if (Date.now() - this.lastSend < this.player.move_time) return;
+
     if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
+      this.lastSend = Date.now();
       gameChannel.push('move', { dir: 'w' });
     } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
+      this.lastSend = Date.now();
       gameChannel.push('move', { dir: 'e' });
     }
 
     if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
+      this.lastSend = Date.now();
       gameChannel.push('move', { dir: 's' });
     } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
+      this.lastSend = Date.now();
       gameChannel.push('move', { dir: 'n' });
     }
   }
