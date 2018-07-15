@@ -15,7 +15,7 @@ class CatBullet extends Phaser.GameObjects.Sprite {
     this.scene.add.existing(this);
     this.setDepth(2);
 
-    this.speed = 1;
+    this.speed = 200;
     this.lifespan = 3000;
     this.animation = 'catFly';
     this.farts = null;
