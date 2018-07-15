@@ -6,7 +6,7 @@ class Bang extends Phaser.GameObjects.Sprite {
 
     this.scene.add.existing(this);
 
-    this.setOrigin(0.5);
+    // this.setOrigin(0.5);
     // scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.setDepth(1);

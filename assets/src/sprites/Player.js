@@ -1,5 +1,5 @@
 import Keyboard from '../utils/keyboard';
-import { CatBullet } from '../sprites';
+import CatBullet from './CatBullet';
 import { gameChannel } from '../client';
 
 class Player extends Phaser.GameObjects.Sprite {
@@ -9,7 +9,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.shootSounds = [
       this.scene.sound.add('miau1', { loop: false }),
       this.scene.sound.add('miau2', { loop: false }),
-      this.scene.sound.add('miau3', { loop: false })
+      this.scene.sound.add('miau3', { loop: false }),
     ];
 
     this.deathSound = this.scene.sound.add('miau4', { loop: false });
@@ -50,7 +50,6 @@ class Player extends Phaser.GameObjects.Sprite {
     bullet.fire(this);
 
     !noPush && gameChannel.push('fire', { dir: this.direction, x: Math.floor(this.x / 16), y: Math.floor(this.y / 16) });
-    setTimeout(() => bullet.hit(), bullet.lifespan);
   }
 
   update() {

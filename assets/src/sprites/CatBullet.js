@@ -15,7 +15,7 @@ class CatBullet extends Phaser.GameObjects.Sprite {
     this.scene.add.existing(this);
     this.setDepth(2);
 
-    this.speed = 100;
+    this.speed = 1;
     this.lifespan = 3000;
     this.animation = 'catFly';
     this.farts = null;
@@ -31,6 +31,8 @@ class CatBullet extends Phaser.GameObjects.Sprite {
     this.intervalFarts = setInterval(() => {
       this.farts.add(new Fart(this.scene, this.x, this.y));
     }, 200);
+
+    this.destroyTimeout = setTimeout(() => this.hit(), this.lifespan);
   }
 
   fire(gun) {
@@ -53,7 +55,8 @@ class CatBullet extends Phaser.GameObjects.Sprite {
 
   hit() {
     clearInterval(this.intervalFarts);
-    new Bang(this.scene, this.x, this.y);
+    clearTimeout(this.destroyTimeout);
+    new Bang(this.scene, this.x, this.y); // eslint-disable-line
     this.destroy();
   }
 

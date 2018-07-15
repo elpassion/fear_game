@@ -1,0 +1,40 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb-base"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "max-len": [
+      "warn",
+      100,
+      2,
+      {
+        "ignoreUrls": true,
+        "ignoreComments": true,
+        "ignoreRegExpLiterals": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "no-plusplus": 0,
+    "import/no-cycle": 0,
+    "import/no-unresolved": [2],
+    "linebreak-style": 0,
+    "import/no-extraneous-dependencies": 0,
+    "no-unused-expressions": ["warn", { "allowShortCircuit": true, "allowTernary": true }],
+    "curly": [0],
+    "class-methods-use-this": [0],
+    "no-param-reassign": [0]
+  },
+  "globals": {
+    "Phaser": true
+  },
+  "settings": {
+    "import/core-modules": [ "phaser" ]
+  }
+}

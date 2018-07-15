@@ -1,2 +1,8 @@
-export { default as Player } from './Player'
-export { default as CatBullet } from './CatBullet'
+import Player from './Player';
+import CatBullet from './CatBullet';
+
+
+export default {
+  Player,
+  CatBullet,
+};
