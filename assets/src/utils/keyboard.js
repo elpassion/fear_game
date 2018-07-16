@@ -17,7 +17,6 @@ class PlayerKeyboard {
     this.keyboard = scene.input.keyboard;
     scene.input.keyboard.removeKey(16);
 
-    this.turnFlag = false;
     this.lastSend = Date.now();
   }
 
@@ -28,51 +27,44 @@ class PlayerKeyboard {
 
     if (Date.now() - this.lastSend < this.player.move_time) return;
 
-    if (!this.turnFlag) {
-      if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
-        this.lastSend = Date.now();
-        if (this.player.direction !== 'w') {
-          this.player.direction = 'w';
-          this.player.animation = 'leftStanding';
-          this.player.playAnimation();
-          gameChannel.push('turn', {dir: 'w'});
-        } else {
-          gameChannel.push('move', { dir: 'w' });
-        }
-      } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
-        this.lastSend = Date.now();
-        if (this.player.direction !== 'e') {
-          this.player.direction = 'e';
-          this.player.animation = 'rightStanding';
-          this.player.playAnimation();
-          gameChannel.push('turn', {dir: 'e'});
-        } else {
-          gameChannel.push('move', { dir: 'e' });
-        }
+    if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
+      if (this.player.direction !== 'w') {
+        this.updateRotate('w', 'leftStanding');
+        return;
       }
-
-      if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
-        this.lastSend = Date.now();
-        if (this.player.direction !== 's') {
-          this.player.direction = 's';
-          this.player.animation = 'downStanding';
-          this.player.playAnimation();
-          gameChannel.push('turn', {dir: 's'});
-        } else {
-          gameChannel.push('move', { dir: 's' });
-        }
-      } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
-        this.lastSend = Date.now();
-        if (this.player.direction !== 'n') {
-          this.player.direction = 'n';
-          this.player.animation = 'upStanding';
-          this.player.playAnimation();
-          gameChannel.push('turn', {dir: 'n'});
-        } else {
-          gameChannel.push('move', { dir: 'n' });
-        }
+      this.lastSend = Date.now();
+      gameChannel.push('move', { dir: 'w' });
+    } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
+      if (this.player.direction !== 'e') {
+        this.updateRotate('e', 'rightStanding');
+        return;
       }
+      this.lastSend = Date.now();
+      gameChannel.push('move', { dir: 'e' });
     }
+
+    if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
+      if (this.player.direction !== 's') {
+        this.updateRotate('s', 'downStanding');
+        return;
+      }
+      this.lastSend = Date.now();
+      gameChannel.push('move', { dir: 's' });
+    } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
+      if (this.player.direction !== 'n') {
+        this.updateRotate('n', 'upStanding');
+        return;
+      }
+      this.lastSend = Date.now();
+      gameChannel.push('move', { dir: 'n' });
+    }
+  }
+
+  updateRotate(dir, animation) {
+    this.player.animation = animation;
+    this.player.direction = dir;
+    this.player.playAnimation(true);
+    gameChannel.push('turn', { dir });
   }
 }
 

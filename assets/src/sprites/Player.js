@@ -61,7 +61,8 @@ class Player extends Phaser.GameObjects.Sprite {
     this.anims.play(this.animation, true);
   }
 
-  animComplete() {
+  animComplete(stop) {
+    stop && this.anims.isPlaying && this.anims.stop();
     !this.alive && this.destroy();
   }
 
