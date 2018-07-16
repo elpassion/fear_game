@@ -23,7 +23,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     this.controls = new Keyboard(this, this.scene);
     this.animation = 'downStanding';
-    this.firingAngle = 270;
+    this.firingAngle = 90;
     this.alive = true;
     this.catBullets = [];
     this.body.immovable = true;
@@ -44,6 +44,7 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   fireCat(noPush) {
+    this.firingAngle = this.calculateAngle();
     this.shootSounds[Math.floor(Math.random() * this.shootSounds.length)].play();
     const bullet = new CatBullet(this.scene);
     this.catBullets.add(bullet);
@@ -68,6 +69,13 @@ class Player extends Phaser.GameObjects.Sprite {
     this.deathSound.play();
 
     this.alive = false;
+  }
+
+  calculateAngle() {
+    if (this.direction === 'n') return 270;
+    if (this.direction === 's') return 90;
+    if (this.direction === 'e') return 0;
+    return 180;
   }
 }
 
