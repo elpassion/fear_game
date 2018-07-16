@@ -84,7 +84,8 @@ defmodule Fear.Game do
 
   def kill_user(username) do
     Board.delete(:user, username)
-    Users.update(username, alive?: false)
+    user = Users.get(username)
+    Users.update(username, alive?: false, deaths: user.deaths + 1)
   end
 
   defp find_free_spot() do

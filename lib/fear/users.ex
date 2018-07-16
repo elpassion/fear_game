@@ -34,6 +34,14 @@ defmodule Fear.Users do
     GenServer.call(__MODULE__, {:count})
   end
 
+  def refresh() do
+    GenServer.call(__MODULE__, {:refresh})
+  end
+
+  def leaderboard() do
+    GenServer.call(__MODULE__, {:leaderboard})
+  end
+
   def handle_call({:join, username, position}, _from, state) do
     user =
       state
@@ -68,6 +76,29 @@ defmodule Fear.Users do
 
   def handle_call({:count}, _from, state) do
     {:reply, Enum.count(state), state}
+  end
+
+  def handle_call({:refresh}, _from, state) do
+    state =
+      state
+      |> Enum.map(fn {name, user} ->
+        {name, %{user | deaths: 0}}
+      end)
+      |> Enum.into(%{})
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:leaderboard}, _from, state) do
+    leaderboard =
+      state
+      |> Enum.map(fn {name, user} ->
+        {name, user.deaths}
+      end)
+      |> Enum.sort(fn {_name1, deaths1}, {_name2, deaths2} ->
+        deaths1 <= deaths2
+      end)
+      |> Enum.into(%{})
+    {:reply, leaderboard, state}
   end
 
   defp get_user(state, username, position) do

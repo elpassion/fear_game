@@ -16,6 +16,7 @@ defmodule Fear.Game.Watcher do
   def init(:ok) do
     send(self(), :start)
     Process.send_after(self(), :destroy_field, @interval)
+    Process.send_after(self(), :leaderboard, 1000)
     {:ok, []}
   end
 
@@ -56,6 +57,12 @@ defmodule Fear.Game.Watcher do
       end
     end)
 
+    {:noreply, state}
+  end
+
+  def handle_info(:leaderboard, state) do
+    Process.send_after(self(), :leaderboard, 1000)
+    FearWeb.Endpoint.broadcast("game:lobby", "leaderboard", Users.leaderboard)
     {:noreply, state}
   end
 
