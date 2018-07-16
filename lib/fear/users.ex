@@ -35,7 +35,10 @@ defmodule Fear.Users do
   end
 
   def handle_call({:join, username, position}, _from, state) do
-    user = get_user(state, username, position)
+    user =
+      state
+      |> get_user(username, position)
+      |> Map.put(:alive?, true)
     {:reply, user, Map.put(state, username, user)}
   end
 

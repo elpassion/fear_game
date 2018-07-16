@@ -19,7 +19,6 @@ export default class extends Phaser.Scene {
       classType: Player,
     });
 
-
     socket.connect();
 
     gameChannel.push('get_map')
@@ -233,6 +232,10 @@ export default class extends Phaser.Scene {
       this.player.move_time = data.move_time;
     }
 
+    if (lost && this.player.name === data.name) {
+      setTimeout(() => this.rebirthTimer(data.name), 3000);
+    }
+
     let direction = '';
 
     const playerX = Math.round(movingPlayer.x / 16);
@@ -305,6 +308,11 @@ export default class extends Phaser.Scene {
         }
       },
     });
+  }
+
+  rebirthTimer(username) {
+    // TODO: Add timer text and rebirth after that time
+    gameChannel.push("join");
   }
 
   colorFromString(string, saturation = 1.0) {

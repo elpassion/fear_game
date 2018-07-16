@@ -4,10 +4,18 @@ defmodule Fear.Game do
   @max 200
 
   def join(username) do
+    case Users.get(username) do
+      nil -> do_join(username)
+      %{alive?: false} -> do_join(username)
+      user -> {:error, user}
+    end
+  end
+
+  defp do_join(username) do
     position = find_free_spot()
     user = Users.join(username, position)
     {:ok, position} = Board.add_user(position, username)
-    update_user_position(user, position)
+    {:ok, update_user_position(user, position)}
   end
 
   def get_map() do

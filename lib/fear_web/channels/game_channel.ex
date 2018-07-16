@@ -4,12 +4,24 @@ defmodule FearWeb.GameChannel do
 
   def join("game:lobby", _payload, socket) do
     if authorized?(socket) do
-      user = Game.join(socket.assigns[:username])
-      Process.send_after(self(), {:joined, user}, 0)
+      case Game.join(socket.assigns[:username]) do
+        {:ok, user} -> send(self(), {:joined, user})
+        {:error, _} -> :ok
+      end
+
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  def handle_in("join", _, socket) do
+    case Game.join(socket.assigns[:username]) do
+      {:ok, user} -> send(self(), {:joined, user})
+      {:error, _} -> :ok
+    end
+    
+    {:noreply, socket}
   end
 
   def handle_in("get_map", _, socket) do
