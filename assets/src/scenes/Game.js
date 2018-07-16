@@ -270,10 +270,10 @@ export default class extends Phaser.Scene {
 
     let movement = {};
 
-    if (direction === 'n') movement = { start: 'up', complete: 'upStanding', angle: 270 };
-    if (direction === 's') movement = { start: 'down', complete: 'downStanding', angle: 90 };
-    if (direction === 'e') movement = { start: 'right', complete: 'rightStanding', angle: 0 };
-    if (direction === 'w') movement = { start: 'left', complete: 'leftStanding', angle: 180 };
+    if (direction === 'n') movement = { start: 'up', complete: 'upStanding' };
+    if (direction === 's') movement = { start: 'down', complete: 'downStanding' };
+    if (direction === 'e') movement = { start: 'right', complete: 'rightStanding' };
+    if (direction === 'w') movement = { start: 'left', complete: 'leftStanding' };
 
     this.tweens.add({
       targets: movingPlayer,
@@ -284,7 +284,6 @@ export default class extends Phaser.Scene {
       onStart: () => {
         if (!push) {
           movingPlayer.lastMove = Date.now();
-          movingPlayer.firingAngle = movement.angle;
           movingPlayer.direction = direction;
           movingPlayer.animation = movement.start;
           movingPlayer.playAnimation();
