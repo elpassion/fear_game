@@ -42,20 +42,24 @@ defmodule Fear.Game.Watcher do
   def handle_info(:destroy_field, state) do
     Process.send_after(self(), :destroy_field, @interval)
 
-    {x, y} = Board.Generator.find_edge_point()
+    case Board.Generator.find_edge_point() do
+      {x, y} ->
+        Board.get_field({x, y})
+        |> Enum.each(fn {field, _} ->
+          case field do
+            {:field, id}  ->
+              :ok = Board.delete(:field, id)
+              FearWeb.Endpoint.broadcast("game:lobby", "destroy_field", %{x: x, y: y})
+            {:user, username} ->
+              Game.kill_user(username)
+              FearWeb.Endpoint.broadcast("game:lobby", "lose", %{x: x, y: y, name: username, move_time: 1000})
+          end
+        end)
 
-    Board.get_field({x, y})
-
-    |> Enum.each(fn {field, _} ->
-      case field do
-        {:field, id}  ->
-          :ok = Board.delete(:field, id)
-          FearWeb.Endpoint.broadcast("game:lobby", "destroy_field", %{x: x, y: y})
-        {:user, username} ->
-          Game.kill_user(username)
-          FearWeb.Endpoint.broadcast("game:lobby", "lose", %{x: x, y: y, name: username, move_time: 1000})
-      end
-    end)
+      nil ->
+        Users.refresh()
+        send(self(), :start)
+    end
 
     {:noreply, state}
   end

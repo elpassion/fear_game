@@ -29,7 +29,7 @@ defmodule Fear.Board.Generator do
     map = gen_map_close(map, gen_dir(1, x, y), size, iteration + 1)
     map = gen_map_close(map, gen_dir(2, x, y), size, iteration + 1)
     map = gen_map_close(map, gen_dir(3, x, y), size, iteration + 1)
-    map = gen_map_close(map, gen_dir(4, x, y), size, iteration + 1)
+    gen_map_close(map, gen_dir(4, x, y), size, iteration + 1)
   end
 
   defp gen_dir(1, x, y), do: {x + 1, y}
@@ -50,10 +50,14 @@ defmodule Fear.Board.Generator do
     |> Enum.map(&edge_count(points_map, &1))
     |> Enum.sort(fn {_point1, count1}, {_point2, count2} -> count1 >= count2 end)
     |> Enum.take(:math.sqrt(length) |> :math.ceil |> round)
-    |> Enum.random()
+    |> random()
     |> to_point()
   end
 
+  defp random([]), do: nil
+  defp random(list), do: Enum.random(list)
+
+  defp to_point(nil), do: nil
   defp to_point({{x, y}, _}), do: {x, y}
 
   defp edge_count(map, {x, y}) do

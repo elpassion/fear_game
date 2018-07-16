@@ -94,9 +94,6 @@ defmodule Fear.Users do
       |> Enum.map(fn {name, user} ->
         {name, user.deaths}
       end)
-      |> Enum.sort(fn {_name1, deaths1}, {_name2, deaths2} ->
-        deaths1 <= deaths2
-      end)
       |> Enum.into(%{})
     {:reply, leaderboard, state}
   end
