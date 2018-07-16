@@ -85,13 +85,22 @@ defmodule FearWeb.GameChannel do
     {:noreply, socket}
   end
 
-  intercept ["user_joined"]
+  intercept ["user_joined", "turn"]
 
   def handle_out("user_joined", msg, socket) do
     if socket.assigns[:username] == msg.name do
       {:noreply, socket}
     else
       push socket, "user_joined", msg
+      {:noreply, socket}
+    end
+  end
+
+  def handle_out("turn", msg, socket) do
+    if socket.assigns[:username] == msg.name do
+      {:noreply, socket}
+    else
+      push socket, "turn", msg
       {:noreply, socket}
     end
   end

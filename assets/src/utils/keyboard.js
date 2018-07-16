@@ -28,14 +28,14 @@ class PlayerKeyboard {
     if (Date.now() - this.lastSend < this.player.move_time) return;
 
     if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
-      if (this.player.direction !== 'w') {
+      if (this.player.direction !== 'w' && this.isNotMoving()) {
         this.updateRotate('w', 'leftStanding');
         return;
       }
       this.lastSend = Date.now();
       gameChannel.push('move', { dir: 'w' });
     } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
-      if (this.player.direction !== 'e') {
+      if (this.player.direction !== 'e' && this.isNotMoving()) {
         this.updateRotate('e', 'rightStanding');
         return;
       }
@@ -44,14 +44,14 @@ class PlayerKeyboard {
     }
 
     if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
-      if (this.player.direction !== 's') {
+      if (this.player.direction !== 's' && this.isNotMoving()) {
         this.updateRotate('s', 'downStanding');
         return;
       }
       this.lastSend = Date.now();
       gameChannel.push('move', { dir: 's' });
     } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
-      if (this.player.direction !== 'n') {
+      if (this.player.direction !== 'n' && this.isNotMoving()) {
         this.updateRotate('n', 'upStanding');
         return;
       }
@@ -65,6 +65,11 @@ class PlayerKeyboard {
     this.player.direction = dir;
     this.player.playAnimation(true);
     gameChannel.push('turn', { dir });
+  }
+
+  isNotMoving() {
+    return this.player.animation != 'left' && this.player.animation != 'right'
+        && this.player.animation != 'up' && this.player.animation != 'down';
   }
 }
 
