@@ -3,8 +3,11 @@ defmodule Fear.Game.Watcher do
   alias Fear.{Board, Game, Users}
   require Logger
 
-  @interval 300
-  @size 2000
+  @interval 500
+
+  defp size() do
+    Users.count() * 100 + 500
+  end
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -57,7 +60,7 @@ defmodule Fear.Game.Watcher do
   end
 
   def handle_info(:start, state) do
-    Board.Generator.generate({100, 100}, @size)
+    Board.Generator.generate({100, 100}, size())
     |> Enum.reduce(0, fn {{x, y}, true}, acc ->
       Board.add({x, y}, :field, acc, false)
       acc + 1

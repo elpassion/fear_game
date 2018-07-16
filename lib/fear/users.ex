@@ -30,6 +30,10 @@ defmodule Fear.Users do
     GenServer.call(__MODULE__, {:restart})
   end
 
+  def count() do
+    GenServer.call(__MODULE__, {:count})
+  end
+
   def handle_call({:join, username, position}, _from, state) do
     user = get_user(state, username, position)
     {:reply, user, Map.put(state, username, user)}
@@ -57,6 +61,10 @@ defmodule Fear.Users do
 
   def handle_call({:restart}, _from, _state) do
     {:reply, :ok, %{}}
+  end
+
+  def handle_call({:count}, _from, state) do
+    {:reply, Enum.count(state), state}
   end
 
   defp get_user(state, username, position) do
