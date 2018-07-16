@@ -20,7 +20,7 @@ export default class extends Phaser.Scene {
     });
 
     socket.connect();
-    
+
     gameChannel.on('map', (level) => {
       this.generateMap(level.data);
     });
@@ -53,6 +53,10 @@ export default class extends Phaser.Scene {
     gameChannel.on('fire', (data) => {
       data.username && this.player.name !== data.username && this.getPlayerFromGroup(data.username).fireCat(true);
     });
+
+    gameChannel.on('turn', (data) => {
+      this.animateTurn(data);
+    })
 
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
@@ -309,6 +313,18 @@ export default class extends Phaser.Scene {
         }
       },
     });
+  }
+
+  animateTurn(data) {
+    const movingPlayer = this.getPlayerFromGroup(data.name);
+    const direction = data.dir;
+
+    if (direction === 'n') movingPlayer.animation = 'upStanding';
+    if (direction === 's') movingPlayer.animation = 'downStanding';
+    if (direction === 'e') movingPlayer.animation = 'rightStanding';
+    if (direction === 'w') movingPlayer.animation = 'leftStanding';
+
+    movingPlayer.playAnimation();
   }
 
   rebirthTimer(username) {

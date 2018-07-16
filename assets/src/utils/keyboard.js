@@ -35,6 +35,7 @@ class PlayerKeyboard {
           this.player.direction = 'w';
           this.player.animation = 'leftStanding';
           this.player.playAnimation();
+          gameChannel.push('turn', {dir: 'w'});
         } else {
           gameChannel.push('move', { dir: 'w' });
         }
@@ -44,6 +45,7 @@ class PlayerKeyboard {
           this.player.direction = 'e';
           this.player.animation = 'rightStanding';
           this.player.playAnimation();
+          gameChannel.push('turn', {dir: 'e'});
         } else {
           gameChannel.push('move', { dir: 'e' });
         }
@@ -55,6 +57,7 @@ class PlayerKeyboard {
           this.player.direction = 's';
           this.player.animation = 'downStanding';
           this.player.playAnimation();
+          gameChannel.push('turn', {dir: 's'});
         } else {
           gameChannel.push('move', { dir: 's' });
         }
@@ -64,6 +67,7 @@ class PlayerKeyboard {
           this.player.direction = 'n';
           this.player.animation = 'upStanding';
           this.player.playAnimation();
+          gameChannel.push('turn', {dir: 'n'});
         } else {
           gameChannel.push('move', { dir: 'n' });
         }

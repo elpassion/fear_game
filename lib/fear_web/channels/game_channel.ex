@@ -49,6 +49,11 @@ defmodule FearWeb.GameChannel do
     end
   end
 
+  def handle_in("turn", %{"dir" => direction}, socket) do
+    broadcast socket, "turn", %{name: socket.assigns[:username], dir: direction}
+    {:noreply, socket}
+  end
+
   def handle_in("hit", %{"dir" => direction, "username" => username}, socket) do
     direction = String.to_existing_atom(direction)
     case Game.fly(username, direction) do
