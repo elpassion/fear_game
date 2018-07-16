@@ -17,6 +17,7 @@ class PlayerKeyboard {
     this.keyboard = scene.input.keyboard;
     scene.input.keyboard.removeKey(16);
 
+    this.turnFlag = false;
     this.lastSend = Date.now();
   }
 
@@ -27,20 +28,46 @@ class PlayerKeyboard {
 
     if (Date.now() - this.lastSend < this.player.move_time) return;
 
-    if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
-      this.lastSend = Date.now();
-      gameChannel.push('move', { dir: 'w' });
-    } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
-      this.lastSend = Date.now();
-      gameChannel.push('move', { dir: 'e' });
-    }
+    if (!this.turnFlag) {
+      if (this.keyboard.checkDown(this.cursors.left, this.player.move_time)) {
+        this.lastSend = Date.now();
+        if (this.player.direction !== 'w') {
+          this.player.direction = 'w';
+          this.player.animation = 'leftStanding';
+          this.player.playAnimation();
+        } else {
+          gameChannel.push('move', { dir: 'w' });
+        }
+      } else if (this.keyboard.checkDown(this.cursors.right, this.player.move_time)) {
+        this.lastSend = Date.now();
+        if (this.player.direction !== 'e') {
+          this.player.direction = 'e';
+          this.player.animation = 'rightStanding';
+          this.player.playAnimation();
+        } else {
+          gameChannel.push('move', { dir: 'e' });
+        }
+      }
 
-    if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
-      this.lastSend = Date.now();
-      gameChannel.push('move', { dir: 's' });
-    } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
-      this.lastSend = Date.now();
-      gameChannel.push('move', { dir: 'n' });
+      if (this.keyboard.checkDown(this.cursors.down, this.player.move_time)) {
+        this.lastSend = Date.now();
+        if (this.player.direction !== 's') {
+          this.player.direction = 's';
+          this.player.animation = 'downStanding';
+          this.player.playAnimation();
+        } else {
+          gameChannel.push('move', { dir: 's' });
+        }
+      } else if (this.keyboard.checkDown(this.cursors.up, this.player.move_time)) {
+        this.lastSend = Date.now();
+        if (this.player.direction !== 'n') {
+          this.player.direction = 'n';
+          this.player.animation = 'upStanding';
+          this.player.playAnimation();
+        } else {
+          gameChannel.push('move', { dir: 'n' });
+        }
+      }
     }
   }
 }
