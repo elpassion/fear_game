@@ -1,8 +1,9 @@
 defmodule Fear.Game.Watcher do
   use GenServer
   alias Fear.{Board, Game, Users}
+  require Logger
 
-  @interval 3000
+  @interval 300
   @size 2000
 
   def start_link() do
@@ -23,11 +24,13 @@ defmodule Fear.Game.Watcher do
     Board.restart()
     Users.restart()
 
-    Board.Generator.generate({50, 50}, size)
+    Board.Generator.generate({100, 100}, size)
     |> Enum.reduce(0, fn {{x, y}, true}, acc ->
       Board.add({x, y}, :field, acc, false)
       acc + 1
     end)
+
+    Logger.info "Map generated"
 
     {:reply, :ok, state}
   end
@@ -54,11 +57,13 @@ defmodule Fear.Game.Watcher do
   end
 
   def handle_info(:start, state) do
-    Board.Generator.generate({50, 50}, @size)
+    Board.Generator.generate({100, 100}, @size)
     |> Enum.reduce(0, fn {{x, y}, true}, acc ->
       Board.add({x, y}, :field, acc, false)
       acc + 1
     end)
+
+    Logger.info "Map generated"
 
     {:noreply, state}
   end

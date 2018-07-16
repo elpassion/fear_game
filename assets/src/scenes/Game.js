@@ -198,6 +198,7 @@ export default class extends Phaser.Scene {
 
     this.playersGroup.add(this.player);
     this.cameras.main.startFollow(this.player);
+    // this.cameras.main.zoom = 0.2;
   }
 
   createPlayer(data) {

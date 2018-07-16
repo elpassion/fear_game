@@ -8,9 +8,9 @@ defmodule Fear.Board.Generator do
   defp gen_map(map, {x, y}, _size, _iteration) when x < 1 or y < 1, do: map
   defp gen_map(map, _, size, iteration) when iteration >= size, do: map
   defp gen_map(map, {x, y}, size, _iteration) do
-
     map = if :rand.uniform(2) == 1, do: Map.put(map, {x, y}, true), else: map
     if Map.get(map, {x, y}) do
+      map = gen_map_close(map, {x, y}, 4, 1)
       map = gen_map(map, gen_dir(:rand.uniform(4), x, y), size, Map.keys(map) |> length)
       map = gen_map(map, gen_dir(:rand.uniform(4), x, y), size, Map.keys(map) |> length)
       map = gen_map(map, gen_dir(:rand.uniform(4), x, y), size, Map.keys(map) |> length)
@@ -19,6 +19,17 @@ defmodule Fear.Board.Generator do
     else
       map
     end
+  end
+
+  defp gen_map_close(map, {x, y}, _size, _iteration) when x < 1 or y < 1, do: map
+  defp gen_map_close(map, _, size, iteration) when iteration >= size, do: map
+  defp gen_map_close(map, {x, y}, size, iteration) do
+    map = if :rand.uniform(2) == 1, do: Map.put(map, {x, y}, true), else: map
+    # gen_map_close(map, gen_dir(:rand.uniform(4), x, y), size, iteration + 1)
+    map = gen_map_close(map, gen_dir(1, x, y), size, iteration + 1)
+    map = gen_map_close(map, gen_dir(2, x, y), size, iteration + 1)
+    map = gen_map_close(map, gen_dir(3, x, y), size, iteration + 1)
+    map = gen_map_close(map, gen_dir(4, x, y), size, iteration + 1)
   end
 
   defp gen_dir(1, x, y), do: {x + 1, y}
