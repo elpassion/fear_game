@@ -20,11 +20,12 @@ export default class extends Phaser.Scene {
     });
 
     socket.connect();
+    
+    gameChannel.on('map', (level) => {
+      this.generateMap(level.data);
+    });
 
-    gameChannel.push('get_map')
-      .receive('ok', (level) => {
-        this.generateMap(level.data);
-      });
+    gameChannel.push('get_map');
 
     gameChannel.on('move', (data) => {
       data.move_time && this.animateMove(data);

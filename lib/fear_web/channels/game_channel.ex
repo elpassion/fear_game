@@ -20,12 +20,13 @@ defmodule FearWeb.GameChannel do
       {:ok, user} -> send(self(), {:joined, user})
       {:error, _} -> :ok
     end
-    
+
     {:noreply, socket}
   end
 
   def handle_in("get_map", _, socket) do
-    {:reply, {:ok, %{data: Game.get_map}}, socket}
+    push socket, "map", %{data: Game.get_map}
+    {:noreply, socket}
   end
 
   def handle_in("move", %{"dir" => direction}, socket) do
@@ -68,6 +69,7 @@ defmodule FearWeb.GameChannel do
   end
 
   def handle_info({:joined, user}, socket) do
+    push socket, "map", %{data: Game.get_map}
     push socket, "self_joined", Map.from_struct(user)
     broadcast socket, "user_joined", Map.from_struct(user)
 
