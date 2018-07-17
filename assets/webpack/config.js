@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 // Is the current build a development build
 const IS_DEV = (process.env.NODE_ENV === 'dev')
@@ -35,7 +36,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, '../index.ejs'),
       title: appHtmlTitle
-    })
+    }),
+    new FaviconsWebpackPlugin('./favicon.png'),
   ],
   module: {
     rules: [
