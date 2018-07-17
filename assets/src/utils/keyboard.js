@@ -68,8 +68,8 @@ class PlayerKeyboard {
   }
 
   isNotMoving() {
-    return this.player.animation != 'left' && this.player.animation != 'right'
-        && this.player.animation != 'up' && this.player.animation != 'down';
+    return this.player.animation !== 'left' && this.player.animation !== 'right'
+        && this.player.animation !== 'up' && this.player.animation !== 'down';
   }
 }
 

@@ -56,7 +56,7 @@ export default class extends Phaser.Scene {
 
     gameChannel.on('turn', (data) => {
       this.animateTurn(data);
-    })
+    });
 
     gameChannel.on('destroy_field', (point) => {
       if (this.layer && this.layer.layer) {
@@ -329,7 +329,8 @@ export default class extends Phaser.Scene {
 
   rebirthTimer(username) {
     // TODO: Add timer text and rebirth after that time
-    gameChannel.push("join");
+    console.log(username);
+    gameChannel.push('join');
   }
 
   colorFromString(string, saturation = 1.0) {
