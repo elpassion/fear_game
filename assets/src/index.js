@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { Boot, Game } from 'scenes'
+import 'utils/leaderboard'
 
 const config = {
   type: Phaser.AUTO,

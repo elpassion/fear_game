@@ -68,15 +68,18 @@ defmodule Fear.Game do
           if Board.get_field(position) |> Enum.count == 1 do
             user = update_user_position(user, position)
             user = kill_user(user.name)
-            {:lose, user, 450}
+            {:lose, user, 350}
           else
             update_user_position(user, position)
             user = Users.update(username, flying?: false)
-            {:ok, user, 450}
+            {:ok, user, 350}
           end
         {:error, position} -> {:error, position}
       end
     else
+      if NaiveDateTime.diff(NaiveDateTime.utc_now(), user.last_move, :millisecond) > 350 do
+        Users.update(username, flying?: false)
+      end
       {:flying, user}
     end
 
