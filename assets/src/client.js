@@ -1,6 +1,7 @@
 import { Socket, Presence } from 'phoenix';
+import name from 'utils/names';
 
-const socket = new Socket("/socket", {params: {username: "test" + Math.floor(Math.random() * 1000)}});
+const socket = new Socket("/socket", {params: {username: name}});
 
 const gameChannel = socket.channel("game:lobby");
 gameChannel.join();

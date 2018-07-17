@@ -47,6 +47,7 @@ defmodule Fear.Users do
       state
       |> get_user(username, position)
       |> Map.put(:alive?, true)
+      |> Map.put(:joined, true)
     {:reply, user, Map.put(state, username, user)}
   end
 
@@ -82,7 +83,7 @@ defmodule Fear.Users do
     state =
       state
       |> Enum.map(fn {name, user} ->
-        {name, %{user | deaths: 0}}
+        {name, %{user | deaths: 0, joined: false}}
       end)
       |> Enum.into(%{})
     {:reply, :ok, state}
@@ -91,6 +92,7 @@ defmodule Fear.Users do
   def handle_call({:leaderboard}, _from, state) do
     leaderboard =
       state
+      |> Enum.filter(fn {_name, user} -> user.joined end)
       |> Enum.map(fn {name, user} ->
         {name, user.deaths}
       end)
