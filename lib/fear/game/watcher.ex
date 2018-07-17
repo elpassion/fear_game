@@ -6,7 +6,7 @@ defmodule Fear.Game.Watcher do
   @interval 500
 
   defp size() do
-    Enum.min([Users.count() * 100 + 400, 2000])
+    Enum.min([Users.count() * 100 + 400, 1400])
   end
 
   def start_link() do
