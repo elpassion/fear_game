@@ -44,6 +44,11 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   fireCat(noPush) {
+    if (!this.scene) {
+      console.log("Scene is undefined");
+      return;
+    }
+
     this.firingAngle = this.calculateAngle();
     this.shootSounds[Math.floor(Math.random() * this.shootSounds.length)].play();
     const bullet = new CatBullet(this.scene);
