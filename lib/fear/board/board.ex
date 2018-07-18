@@ -83,15 +83,18 @@ defmodule Fear.Board do
   end
 
   def handle_call({:move, type, object, direction}, _from, %Container{} = container) do
-    position = Container.get_position(container, type, object)
-    new_position = Moves.add(position, Directions.calc(direction))
+    case Container.get_position(container, type, object) do
+      nil -> {:reply, {:error, :not_found}, container}
+      position ->
+        new_position = Moves.add(position, Directions.calc(direction))
 
-    cond do
-      Container.blocks?(container, new_position) ->
-        {:reply, {:error, position}, container}
-      true ->
-        container = Container.move(container, new_position, type, object)
-        {:reply, {:ok, new_position}, container}
+        cond do
+          Container.blocks?(container, new_position) ->
+            {:reply, {:error, position}, container}
+          true ->
+            container = Container.move(container, new_position, type, object)
+            {:reply, {:ok, new_position}, container}
+        end
     end
   end
 

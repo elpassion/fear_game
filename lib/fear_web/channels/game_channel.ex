@@ -46,6 +46,9 @@ defmodule FearWeb.GameChannel do
         broadcast socket, "move", %{x: x, y: y, name: socket.assigns[:username]}
         push socket, "blocked", %{x: x, y: y}
         {:noreply, socket}
+      {:error, error} ->
+        push socket, "error", %{error: error}
+        {:noreply, socket}
     end
   end
 
